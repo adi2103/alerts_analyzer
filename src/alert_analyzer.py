@@ -195,20 +195,27 @@ class AlertAnalyzer:
         # Get top k entities
         results = []
         count = 0
+        processed_entities = set()  # Track entities we've already processed
         
         for neg_time, entity_values in filtered_entities.items():
             for entity_value in entity_values:
+                # Skip entities we've already processed (avoid duplicates)
+                if entity_value in processed_entities:
+                    continue
+                    
                 entity_state = dimension_index.entity_states[entity_value]
                 
                 # Skip entities that don't match the alert type filter
                 if alert_type and not self._matches_alert_type(entity_value, entity_state, alert_type):
                     continue
                 
+                # Add to results and mark as processed
                 results.append({
                     f"{dimension_name}_id": entity_value,
                     "total_unhealthy_time": -neg_time,  # Convert back to positive
                     "alert_types": dict(entity_state.alert_type_counts)
                 })
+                processed_entities.add(entity_value)
                 
                 count += 1
                 if count >= k:
