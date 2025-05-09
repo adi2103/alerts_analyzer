@@ -2,9 +2,13 @@
 
 from typing import Dict, Callable, Optional, Any, List
 from datetime import datetime
+import logging
+from pathlib import Path
 
 from src.models import AlertEvent, AlertState, EntityState
 from src.indexing.dimension_index import Index
+from src.utils.file_handler import FileHandler
+from src.utils.logging_config import configure_logging, log_performance_metrics
 
 
 class AlertAnalyzer:
@@ -258,3 +262,69 @@ class AlertAnalyzer:
             True if the entity has alerts of the specified type, False otherwise
         """
         return alert_type in entity_state.alert_type_counts and entity_state.alert_type_counts[alert_type] > 0
+    
+    def analyze_file(self, file_path: str, dimension_name: str = "host", k: int = 5, 
+                    alert_type: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Analyze alert events from a file and return the top k unhealthiest entities.
+        
+        Args:
+            file_path: Path to the gzipped JSON file
+            dimension_name: Name of the dimension to analyze
+            k: Number of entities to return
+            alert_type: Optional filter for specific alert type
+            
+        Returns:
+            List of dictionaries containing entity details, sorted by unhealthy time
+            
+        Raises:
+            FileNotFoundError: If the file does not exist
+            PermissionError: If the file cannot be read
+            ValueError: If the file is not a valid gzipped JSON file or the dimension is not registered
+        """
+        # Configure logging
+        configure_logging()
+        logger = logging.getLogger("alert_analyzer")
+        
+        # Record start time
+        start_time = datetime.now()
+        
+        # Create file handler
+        file_handler = FileHandler(logger)
+        
+        # Process events
+        events_processed = 0
+        try:
+            for event in file_handler.read_events(file_path):
+                self.process_event(event)
+                events_processed += 1
+        except Exception as e:
+            logger.error(f"Error processing file {file_path}: {e}")
+            raise
+        
+        # Record end time
+        end_time = datetime.now()
+        
+        # Log performance metrics
+        log_performance_metrics(start_time, end_time, events_processed, logger)
+        
+        # Return results
+        return self.get_results(dimension_name, k, alert_type)
+    
+    def get_results(self, dimension_name: str = "host", k: int = 5, 
+                   alert_type: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get the top k unhealthiest entities for a specific dimension.
+        
+        Args:
+            dimension_name: Name of the dimension to query
+            k: Number of entities to return
+            alert_type: Optional filter for specific alert type
+            
+        Returns:
+            List of dictionaries containing entity details, sorted by unhealthy time
+            
+        Raises:
+            ValueError: If the dimension is not registered
+        """
+        return self.get_top_k(dimension_name, k, alert_type)
