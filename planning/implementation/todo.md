@@ -13,12 +13,12 @@ This checklist tracks progress on implementing the Alert Analysis System accordi
 - [x] Add docstrings and type hints
 
 ### Prompt 2: File Handling and JSON Parsing
-- [ ] Implement FileHandler class
-- [ ] Add gzip decompression functionality
-- [ ] Add JSON parsing to AlertEvent objects
-- [ ] Implement error handling for file operations
-- [ ] Create sample test file
-- [ ] Write unit tests for file handling
+- [x] Implement FileHandler class
+- [x] Add gzip decompression functionality
+- [x] Add JSON parsing to AlertEvent objects
+- [x] Implement error handling for file operations
+- [x] Create sample test file
+- [x] Write unit tests for file handling
 
 ### Prompt 3: Entity State Model and Basic Index
 - [ ] Implement EntityState class
