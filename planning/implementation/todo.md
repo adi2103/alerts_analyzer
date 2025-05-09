@@ -38,11 +38,11 @@ This checklist tracks progress on implementing the Alert Analysis System accordi
 - [x] Add edge case handling
 
 ### Prompt 5: Basic Query Engine Implementation
-- [ ] Implement get_top_k method
-- [ ] Add _apply_filters method
-- [ ] Add _matches_alert_type method
-- [ ] Write unit tests for basic queries
-- [ ] Write unit tests for alert type filtering
+- [x] Implement get_top_k method
+- [x] Add _apply_filters method
+- [x] Add _matches_alert_type method
+- [x] Write unit tests for basic queries
+- [x] Write unit tests for alert type filtering
 
 ### Prompt 6: Error Handling and Logging
 - [ ] Set up logging configuration

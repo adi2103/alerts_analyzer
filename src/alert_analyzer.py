@@ -164,3 +164,97 @@ class AlertAnalyzer:
             new_time: New unhealthy time
         """
         dimension_index.update_entity_position(entity_value, old_time, new_time)
+    
+    def get_top_k(self, dimension_name: str, k: int = 5, alert_type: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get top k entities by unhealthy time for a specific dimension.
+        
+        Args:
+            dimension_name: Name of the dimension to query
+            k: Number of entities to return
+            alert_type: Optional filter for specific alert type
+            
+        Returns:
+            List of dictionaries containing entity details, sorted by unhealthy time
+            
+        Raises:
+            ValueError: If the dimension is not registered
+        """
+        if dimension_name not in self.dimensions:
+            raise ValueError(f"Dimension {dimension_name} not registered")
+        
+        dimension_index = self.dimensions[dimension_name]
+        
+        # Apply any filters to the ordered entities
+        filtered_entities = self._apply_filters(dimension_index, alert_type)
+        
+        # Get top k entities
+        results = []
+        count = 0
+        
+        for neg_time, entity_values in filtered_entities.items():
+            for entity_value in entity_values:
+                entity_state = dimension_index.entity_states[entity_value]
+                
+                # Skip entities that don't match the alert type filter
+                if alert_type and not self._matches_alert_type(entity_value, entity_state, alert_type):
+                    continue
+                
+                results.append({
+                    f"{dimension_name}_id": entity_value,
+                    "total_unhealthy_time": -neg_time,  # Convert back to positive
+                    "alert_types": dict(entity_state.alert_type_counts)
+                })
+                
+                count += 1
+                if count >= k:
+                    return results
+        
+        return results
+    
+    def _apply_filters(self, dimension_index: Index, alert_type: Optional[str] = None) -> Dict:
+        """
+        Apply filters to the ordered entities.
+        
+        Args:
+            dimension_index: The dimension index to filter
+            alert_type: Optional filter for specific alert type
+            
+        Returns:
+            Filtered ordered entities
+        """
+        if not alert_type:
+            # No filtering needed
+            return dimension_index.ordered_entities
+        
+        # If filtering by alert type, we need to create a new ordered dict
+        # This is because we can't efficiently filter the SortedDict directly
+        filtered = {}
+        
+        for neg_time, entity_values in dimension_index.ordered_entities.items():
+            filtered_values = set()
+            
+            for entity_value in entity_values:
+                entity_state = dimension_index.entity_states[entity_value]
+                
+                if self._matches_alert_type(entity_value, entity_state, alert_type):
+                    filtered_values.add(entity_value)
+            
+            if filtered_values:
+                filtered[neg_time] = filtered_values
+        
+        return filtered
+    
+    def _matches_alert_type(self, entity_value: str, entity_state: EntityState, alert_type: str) -> bool:
+        """
+        Check if an entity has alerts of a specific type.
+        
+        Args:
+            entity_value: Value of the entity to check
+            entity_state: State of the entity
+            alert_type: Alert type to check for
+            
+        Returns:
+            True if the entity has alerts of the specified type, False otherwise
+        """
+        return alert_type in entity_state.alert_type_counts and entity_state.alert_type_counts[alert_type] > 0
