@@ -3,7 +3,8 @@
 import pytest
 from datetime import datetime
 import json
-from src.models import AlertEvent, AlertState
+from collections import defaultdict
+from src.models import AlertEvent, AlertState, EntityState
 
 
 class TestAlertEvent:
@@ -239,3 +240,135 @@ class TestAlertState:
         timestamp2 = datetime(2023, 1, 1, 12, 10, 0)
         state.update_state(timestamp2, "RSV")
         assert state.get_duration() == 600  # 10 minutes = 600 seconds
+class TestEntityState:
+    """Tests for the EntityState class."""
+    
+    def test_init(self):
+        """Test initialization of EntityState."""
+        state = EntityState()
+        
+        assert state.total_unhealthy_time == 0
+        assert state.current_alerts == set()
+        assert state.unhealthy_start is None
+        assert state.unhealthy_periods == []
+        assert isinstance(state.alert_type_counts, defaultdict)
+        assert len(state.alert_type_counts) == 0
+    
+    def test_add_alert(self):
+        """Test adding an alert to the entity."""
+        state = EntityState()
+        timestamp = datetime(2023, 1, 1, 12, 0, 0)
+        
+        state.add_alert("alert-123", "Disk Usage Alert", timestamp)
+        
+        assert "alert-123" in state.current_alerts
+        assert state.unhealthy_start == timestamp
+        assert state.alert_type_counts["Disk Usage Alert"] == 1
+        assert state.is_unhealthy() is True
+    
+    def test_add_multiple_alerts(self):
+        """Test adding multiple alerts to the entity."""
+        state = EntityState()
+        timestamp1 = datetime(2023, 1, 1, 12, 0, 0)
+        timestamp2 = datetime(2023, 1, 1, 12, 5, 0)
+        
+        state.add_alert("alert-123", "Disk Usage Alert", timestamp1)
+        state.add_alert("alert-456", "System Service Failed", timestamp2)
+        
+        assert "alert-123" in state.current_alerts
+        assert "alert-456" in state.current_alerts
+        assert state.unhealthy_start == timestamp1  # Should be the first alert's timestamp
+        assert state.alert_type_counts["Disk Usage Alert"] == 1
+        assert state.alert_type_counts["System Service Failed"] == 1
+        assert state.is_unhealthy() is True
+    
+    def test_remove_alert(self):
+        """Test removing an alert from the entity."""
+        state = EntityState()
+        start_time = datetime(2023, 1, 1, 12, 0, 0)
+        end_time = datetime(2023, 1, 1, 12, 10, 0)  # 10 minutes later
+        
+        state.add_alert("alert-123", "Disk Usage Alert", start_time)
+        state.remove_alert("alert-123", end_time)
+        
+        assert "alert-123" not in state.current_alerts
+        assert state.unhealthy_start is None
+        assert state.total_unhealthy_time == 600  # 10 minutes = 600 seconds
+        assert state.unhealthy_periods == [(start_time, end_time)]
+        assert state.is_unhealthy() is False
+    
+    def test_remove_one_of_multiple_alerts(self):
+        """Test removing one alert when multiple are active."""
+        state = EntityState()
+        timestamp1 = datetime(2023, 1, 1, 12, 0, 0)
+        timestamp2 = datetime(2023, 1, 1, 12, 5, 0)
+        timestamp3 = datetime(2023, 1, 1, 12, 10, 0)
+        
+        state.add_alert("alert-123", "Disk Usage Alert", timestamp1)
+        state.add_alert("alert-456", "System Service Failed", timestamp2)
+        state.remove_alert("alert-123", timestamp3)
+        
+        assert "alert-123" not in state.current_alerts
+        assert "alert-456" in state.current_alerts
+        assert state.unhealthy_start == timestamp1  # Should still be the first alert's timestamp
+        assert state.total_unhealthy_time == 0  # No unhealthy time added yet
+        assert state.unhealthy_periods == []  # No periods recorded yet
+        assert state.is_unhealthy() is True  # Still unhealthy due to alert-456
+    
+    def test_remove_all_alerts(self):
+        """Test removing all alerts from the entity."""
+        state = EntityState()
+        timestamp1 = datetime(2023, 1, 1, 12, 0, 0)
+        timestamp2 = datetime(2023, 1, 1, 12, 5, 0)
+        timestamp3 = datetime(2023, 1, 1, 12, 10, 0)
+        timestamp4 = datetime(2023, 1, 1, 12, 15, 0)
+        
+        state.add_alert("alert-123", "Disk Usage Alert", timestamp1)
+        state.add_alert("alert-456", "System Service Failed", timestamp2)
+        state.remove_alert("alert-123", timestamp3)
+        state.remove_alert("alert-456", timestamp4)
+        
+        assert state.current_alerts == set()
+        assert state.unhealthy_start is None
+        assert state.total_unhealthy_time == 900  # 15 minutes = 900 seconds
+        assert state.unhealthy_periods == [(timestamp1, timestamp4)]
+        assert state.is_unhealthy() is False
+    
+    def test_calculate_unhealthy_time_in_range_no_bounds(self):
+        """Test calculating unhealthy time with no time bounds."""
+        state = EntityState()
+        state.unhealthy_periods = [
+            (datetime(2023, 1, 1, 12, 0, 0), datetime(2023, 1, 1, 12, 10, 0)),  # 10 minutes
+            (datetime(2023, 1, 1, 12, 20, 0), datetime(2023, 1, 1, 12, 30, 0))   # 10 minutes
+        ]
+        
+        assert state.calculate_unhealthy_time_in_range() == 1200  # 20 minutes = 1200 seconds
+    
+    def test_calculate_unhealthy_time_in_range_with_bounds(self):
+        """Test calculating unhealthy time within specific time bounds."""
+        state = EntityState()
+        state.unhealthy_periods = [
+            (datetime(2023, 1, 1, 12, 0, 0), datetime(2023, 1, 1, 12, 10, 0)),  # 10 minutes
+            (datetime(2023, 1, 1, 12, 20, 0), datetime(2023, 1, 1, 12, 30, 0))   # 10 minutes
+        ]
+        
+        # Only include the second period
+        start_time = datetime(2023, 1, 1, 12, 15, 0)
+        end_time = datetime(2023, 1, 1, 12, 35, 0)
+        
+        assert state.calculate_unhealthy_time_in_range(start_time, end_time) == 600  # 10 minutes = 600 seconds
+    
+    def test_calculate_unhealthy_time_in_range_partial_overlap(self):
+        """Test calculating unhealthy time with partial overlap of time bounds."""
+        state = EntityState()
+        state.unhealthy_periods = [
+            (datetime(2023, 1, 1, 12, 0, 0), datetime(2023, 1, 1, 12, 10, 0)),  # 10 minutes
+            (datetime(2023, 1, 1, 12, 20, 0), datetime(2023, 1, 1, 12, 30, 0))   # 10 minutes
+        ]
+        
+        # Partially overlap both periods
+        start_time = datetime(2023, 1, 1, 12, 5, 0)
+        end_time = datetime(2023, 1, 1, 12, 25, 0)
+        
+        # First period: 5 minutes, Second period: 5 minutes
+        assert state.calculate_unhealthy_time_in_range(start_time, end_time) == 600  # 10 minutes = 600 seconds

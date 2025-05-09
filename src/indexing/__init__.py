@@ -1,1 +1,1 @@
-"""Indexing modules for the Alert Analysis System."""
+"""Indexing module for the Alert Analysis System."""

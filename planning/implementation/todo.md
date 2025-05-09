@@ -21,12 +21,12 @@ This checklist tracks progress on implementing the Alert Analysis System accordi
 - [x] Write unit tests for file handling
 
 ### Prompt 3: Entity State Model and Basic Index
-- [ ] Implement EntityState class
-- [ ] Implement Index class
-- [ ] Add SortedDict for ordered access
-- [ ] Implement entity position tracking
-- [ ] Write unit tests for EntityState
-- [ ] Write unit tests for Index
+- [x] Implement EntityState class
+- [x] Implement Index class
+- [x] Add SortedDict for ordered access
+- [x] Implement entity position tracking
+- [x] Write unit tests for EntityState
+- [x] Write unit tests for Index
 
 ### Prompt 4: Alert Lifecycle Processing
 - [ ] Implement AlertAnalyzer core
