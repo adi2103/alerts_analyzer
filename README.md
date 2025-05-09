@@ -15,6 +15,7 @@ The Alert Analysis System processes alert event data from a compressed file cont
 - Filter results by alert type
 - Handle various edge cases in the data
 - Provide detailed logging and error handling
+- Save and manage analysis results with query metadata
 
 ## Installation
 
@@ -33,6 +34,8 @@ pip install -r requirements.txt
 
 ### Command-line Interface
 
+#### Running Analysis
+
 ```
 python -m src <file_path> [options]
 ```
@@ -49,10 +52,35 @@ Example:
 python -m src data/Alert_Event_Data.gz --dimension host --top 10 --alert-type "Disk Usage Alert"
 ```
 
+#### Saving Results
+
+```
+python save_results.py <file_path> [options]
+```
+
+Options:
+- `--dimension`, `-d`: Dimension to analyze (default: host)
+- `--top`, `-k`: Number of entities to return (default: 5)
+- `--alert-type`, `-t`: Filter by alert type
+
+Example:
+```
+python save_results.py data/Alert_Event_Data.gz --dimension dc --top 3
+```
+
+#### Listing Saved Results
+
+```
+python list_results.py
+```
+
+This will display all saved analysis results with their query parameters.
+
 ### Python API
 
 ```python
 from src.alert_analyzer import AlertAnalyzer
+from src.utils.results_manager import ResultsManager
 
 # Create analyzer
 analyzer = AlertAnalyzer()
@@ -68,6 +96,24 @@ results = analyzer.analyze_file(
 # Print results
 for entity in results:
     print(f"{entity['host_id']}: {entity['total_unhealthy_time']} seconds")
+
+# Save results with metadata
+results_manager = ResultsManager()
+filename, saved_results = results_manager.save_results(
+    results,
+    "data/Alert_Event_Data.gz",
+    "host",
+    5,
+    "Disk Usage Alert"
+)
+
+# List all saved results
+all_results = results_manager.list_results()
+for result in all_results:
+    print(f"{result['filename']}: {result['dimension']} - {result['top_k']} results")
+
+# Load a specific result
+loaded_result = results_manager.load_results(filename)
 ```
 
 ## Design
@@ -79,6 +125,7 @@ The Alert Analysis System uses a modular design with the following components:
 3. **File Handling**: Reading and parsing gzipped JSON files
 4. **Alert Processing**: Tracking alert lifecycle and updating entity states
 5. **Query Engine**: Finding top k unhealthiest entities with optional filtering
+6. **Results Management**: Saving, loading, and listing analysis results with query metadata
 
 ## Project Structure
 
@@ -95,7 +142,8 @@ alerts_analyzer/
 │   └── utils/
 │       ├── __init__.py
 │       ├── file_handler.py   # File I/O
-│       └── logging_config.py # Logging setup
+│       ├── logging_config.py # Logging setup
+│       └── results_manager.py # Results management
 ├── tests/
 │   ├── __init__.py
 │   ├── test_models.py
@@ -104,7 +152,11 @@ alerts_analyzer/
 │   ├── test_query_engine.py
 │   ├── test_file_handler.py
 │   ├── test_logging.py
+│   ├── test_results_manager.py
 │   └── test_end_to_end.py
+├── results/                  # Directory for saved analysis results
+├── save_results.py           # Script to save analysis results
+├── list_results.py           # Script to list saved results
 ├── requirements.txt
 └── README.md
 ```
@@ -128,6 +180,8 @@ pytest
 4. **Alert-centric State Tracking**: We track the state of each alert and update entity states accordingly. This allows for accurate handling of overlapping alerts.
 
 5. **Error Handling**: The system is designed to be robust against various error conditions, logging issues but continuing processing where possible.
+
+6. **Results Management**: Analysis results are saved with query metadata to enable reproducibility and tracking of analysis history.
 
 ## Future Enhancements
 
