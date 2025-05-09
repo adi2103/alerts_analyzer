@@ -30,10 +30,10 @@ class FileHandler:
     
     def read_events(self, file_path: Union[str, Path]) -> Iterator[AlertEvent]:
         """
-        Read alert events from a gzipped JSON file.
+        Read alert events from a file (gzipped or plain JSON).
         
         Args:
-            file_path: Path to the gzipped JSON file
+            file_path: Path to the file
             
         Yields:
             AlertEvent objects parsed from the file
@@ -41,7 +41,7 @@ class FileHandler:
         Raises:
             FileNotFoundError: If the file does not exist
             PermissionError: If the file cannot be read
-            ValueError: If the file is not a valid gzipped JSON file
+            ValueError: If the file is not a valid file
         """
         file_path = Path(file_path)
         
@@ -55,8 +55,15 @@ class FileHandler:
             self.logger.error(error_msg)
             raise ValueError(error_msg)
         
+        # Check if file is gzipped
+        is_gzipped = self._is_gzipped(file_path)
+        
         try:
-            with gzip.open(file_path, 'rt') as f:
+            # Open file with appropriate method
+            opener = gzip.open if is_gzipped else open
+            mode = 'rt' if is_gzipped else 'r'
+            
+            with opener(file_path, mode) as f:
                 line_number = 0
                 for line in f:
                     line_number += 1
@@ -103,7 +110,7 @@ class FileHandler:
         Read all alert events from the file into a list.
         
         Args:
-            file_path: Path to the gzipped JSON file
+            file_path: Path to the file
             
         Returns:
             List of AlertEvent objects parsed from the file

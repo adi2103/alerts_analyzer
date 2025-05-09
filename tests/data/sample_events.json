@@ -1,0 +1,3 @@
+{"event_id": "event-123", "alert_id": "alert-456", "timestamp": "2023-01-01T12:00:00Z", "state": "NEW", "type": "Disk Usage Alert", "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}}
+{"event_id": "event-124", "alert_id": "alert-456", "timestamp": "2023-01-01T12:05:00Z", "state": "ACK", "type": "Disk Usage Alert", "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}}
+{"event_id": "event-125", "alert_id": "alert-456", "timestamp": "2023-01-01T12:10:00Z", "state": "RSV", "type": "Disk Usage Alert", "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}}

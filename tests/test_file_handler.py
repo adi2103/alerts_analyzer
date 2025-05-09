@@ -104,12 +104,13 @@ class TestFileHandler:
     def test_file_not_found(self):
         """Test handling of non-existent file."""
         with pytest.raises(FileNotFoundError):
-            FileHandler('nonexistent_file.json')
+            handler = FileHandler()
+            handler.read_events('nonexistent_file.json')
     
     def test_read_json_file(self, sample_json_file, sample_event_data):
         """Test reading events from a JSON file."""
-        handler = FileHandler(sample_json_file)
-        events = list(handler.read_events())
+        handler = FileHandler()
+        events = list(handler.read_events(sample_json_file))
         
         assert len(events) == len(sample_event_data)
         assert all(isinstance(event, AlertEvent) for event in events)
@@ -122,8 +123,8 @@ class TestFileHandler:
     
     def test_read_gzip_file(self, sample_gzip_file, sample_event_data):
         """Test reading events from a gzipped file."""
-        handler = FileHandler(sample_gzip_file)
-        events = list(handler.read_events())
+        handler = FileHandler()
+        events = list(handler.read_events(sample_gzip_file))
         
         assert len(events) == len(sample_event_data)
         assert all(isinstance(event, AlertEvent) for event in events)
@@ -136,30 +137,30 @@ class TestFileHandler:
     
     def test_read_events_list(self, sample_json_file, sample_event_data):
         """Test reading all events into a list."""
-        handler = FileHandler(sample_json_file)
-        events = handler.read_events_list()
+        handler = FileHandler()
+        events = handler.read_events_list(sample_json_file)
         
         assert len(events) == len(sample_event_data)
         assert all(isinstance(event, AlertEvent) for event in events)
     
     def test_invalid_json(self, invalid_json_file):
         """Test handling of invalid JSON."""
-        handler = FileHandler(invalid_json_file)
+        handler = FileHandler()
         
-        with pytest.raises(json.JSONDecodeError):
-            list(handler.read_events())
+        # This should not raise an exception, but log an error and skip the invalid line
+        events = list(handler.read_events(invalid_json_file))
+        assert len(events) == 2  # Only the valid lines should be processed
     
     def test_invalid_gzip(self, invalid_gzip_file):
         """Test handling of invalid gzip file."""
-        handler = FileHandler(invalid_gzip_file)
+        handler = FileHandler()
         
-        with pytest.raises(IOError):
-            list(handler.read_events())
+        with pytest.raises(ValueError):
+            list(handler.read_events(invalid_gzip_file))
     
     def test_is_gzipped(self, sample_json_file, sample_gzip_file):
         """Test detection of gzipped files."""
-        json_handler = FileHandler(sample_json_file)
-        gzip_handler = FileHandler(sample_gzip_file)
+        handler = FileHandler()
         
-        assert json_handler._is_gzipped() is False
-        assert gzip_handler._is_gzipped() is True
+        assert handler._is_gzipped(sample_json_file) is False
+        assert handler._is_gzipped(sample_gzip_file) is True

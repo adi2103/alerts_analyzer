@@ -1,0 +1,30 @@
+2025-05-09 06:40:05,506 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (9259.26 events/sec)
+2025-05-09 06:40:05,508 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (18181.82 events/sec)
+2025-05-09 06:40:05,510 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (17857.14 events/sec)
+2025-05-09 06:42:20,758 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (10330.58 events/sec)
+2025-05-09 06:42:20,760 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (21276.60 events/sec)
+2025-05-09 06:42:20,762 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (16949.15 events/sec)
+2025-05-09 06:44:07,276 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (16977.93 events/sec)
+2025-05-09 06:44:07,278 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (22026.43 events/sec)
+2025-05-09 06:44:07,279 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (21645.02 events/sec)
+2025-05-09 06:44:07,296 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpgyug7jv0.json
+2025-05-09 06:44:07,319 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpmhqpw8yd.json
+2025-05-09 06:44:07,339 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp00iootp8.json
+2025-05-09 06:44:07,358 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpxci_ov52.gz
+2025-05-09 06:45:19,881 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (10384.22 events/sec)
+2025-05-09 06:45:19,883 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (19193.86 events/sec)
+2025-05-09 06:45:19,885 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (15748.03 events/sec)
+2025-05-09 06:45:19,904 - file_handler - ERROR - Error processing event: validation_error
+2025-05-09 06:45:19,904 - file_handler - ERROR - Error processing event: json_decode_error
+2025-05-09 06:45:19,904 - file_handler - ERROR - Error processing event: validation_error
+2025-05-09 06:45:19,907 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp4f58n0tc.gz
+2025-05-09 06:48:44,180 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (15060.24 events/sec)
+2025-05-09 06:48:44,182 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (17889.09 events/sec)
+2025-05-09 06:48:44,183 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (20618.56 events/sec)
+2025-05-09 06:54:09,313 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (26439.94 events/sec)
+2025-05-09 06:54:58,965 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28155.80 events/sec)
+2025-05-09 06:56:04,581 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27034.19 events/sec)
+2025-05-09 06:56:04,619 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28247.81 events/sec)
+2025-05-09 07:01:41,469 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27059.29 events/sec)
+2025-05-09 07:02:15,282 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28742.92 events/sec)
+2025-05-09 07:04:43,761 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (26338.89 events/sec)

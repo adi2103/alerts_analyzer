@@ -1,7 +1,7 @@
 .venv
 .pytest_cache
 archive
-data
+data/Alert_Event_Data
 original
 dist
 build
