@@ -1,1 +1,1 @@
-"""Utility modules for the Alert Analysis System."""
+"""Utility functions for the Alert Analysis System."""
