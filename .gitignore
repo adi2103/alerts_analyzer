@@ -1,0 +1,10 @@
+.venv
+.pytest_cache
+archive
+data
+original
+dist
+build
+*.pyc
+**/__pycache__/
+.DS_Store
