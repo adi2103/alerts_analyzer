@@ -45,7 +45,7 @@ class FileHandler:
         """
         file_path = Path(file_path)
         
-        if not file_path.exists():
+        if not os.path.exists(file_path):
             error_msg = f"File not found: {file_path}"
             self.logger.error(error_msg)
             raise FileNotFoundError(error_msg)

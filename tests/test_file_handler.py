@@ -77,9 +77,12 @@ class TestFileHandler:
     def invalid_json_file(self):
         """Create a file with invalid JSON for testing."""
         with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
-            f.write('{"event_id": "event-123", "alert_id": "alert-456"}\n')  # Valid line
-            f.write('{"event_id": "event-124", "alert_id": "alert-457",\n')  # Invalid JSON
-            f.write('{"event_id": "event-125", "alert_id": "alert-458"}\n')  # Valid line
+            # Write valid JSON events that will pass validation
+            f.write('{"event_id": "event-123", "alert_id": "alert-456", "timestamp": "2023-01-01T12:00:00Z", "state": "NEW", "type": "Disk Usage Alert", "tags": {"host": "host-789"}}\n')
+            # Write invalid JSON that will fail parsing
+            f.write('{"event_id": "event-124", "alert_id": "alert-457",\n')
+            # Write another valid JSON event
+            f.write('{"event_id": "event-125", "alert_id": "alert-458", "timestamp": "2023-01-01T12:00:00Z", "state": "NEW", "type": "Disk Usage Alert", "tags": {"host": "host-789"}}\n')
         
         file_path = Path(f.name)
         yield file_path
@@ -103,9 +106,12 @@ class TestFileHandler:
     
     def test_file_not_found(self):
         """Test handling of non-existent file."""
+        handler = FileHandler()
+        nonexistent_path = "/path/that/definitely/does/not/exist/file.json"
+        
         with pytest.raises(FileNotFoundError):
-            handler = FileHandler()
-            handler.read_events('nonexistent_file.json')
+            # list call is to trigger the iterator next method
+            list(handler.read_events(nonexistent_path))
     
     def test_read_json_file(self, sample_json_file, sample_event_data):
         """Test reading events from a JSON file."""
@@ -150,6 +156,10 @@ class TestFileHandler:
         # This should not raise an exception, but log an error and skip the invalid line
         events = list(handler.read_events(invalid_json_file))
         assert len(events) == 2  # Only the valid lines should be processed
+        
+        # Check that the events are the ones we expect
+        assert events[0].event_id == "event-123"
+        assert events[1].event_id == "event-125"
     
     def test_invalid_gzip(self, invalid_gzip_file):
         """Test handling of invalid gzip file."""

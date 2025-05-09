@@ -1,0 +1,48 @@
+{
+  "query": {
+    "timestamp": "2025-05-09T07:22:30.064603",
+    "data_file": "data/Alert_Event_Data.gz",
+    "parameters": {
+      "dimension": "host",
+      "top_k": 5,
+      "alert_type": "System Service Failed"
+    }
+  },
+  "results": [
+    {
+      "host_id": "host-7f80606d430fb7da",
+      "total_unhealthy_time": 15921.627101,
+      "alert_types": {
+        "System Service Failed": 11
+      }
+    },
+    {
+      "host_id": "host-4e89fdb9fdfc429a",
+      "total_unhealthy_time": 7092.053203,
+      "alert_types": {
+        "System Service Failed": 9
+      }
+    },
+    {
+      "host_id": "host-bf499e046e947f4a",
+      "total_unhealthy_time": 5473.398237,
+      "alert_types": {
+        "System Service Failed": 3
+      }
+    },
+    {
+      "host_id": "host-22f1fddd19b60a0f",
+      "total_unhealthy_time": 2784.730161,
+      "alert_types": {
+        "System Service Failed": 28
+      }
+    },
+    {
+      "host_id": "host-22f1fddd19b60a0f",
+      "total_unhealthy_time": 0,
+      "alert_types": {
+        "System Service Failed": 28
+      }
+    }
+  ]
+}

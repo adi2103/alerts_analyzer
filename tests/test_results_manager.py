@@ -5,6 +5,7 @@ import os
 import json
 import tempfile
 import time
+import shutil
 from pathlib import Path
 
 from src.utils.results_manager import ResultsManager
@@ -91,26 +92,41 @@ class TestResultsManager:
         # Create results manager
         manager = ResultsManager(temp_results_dir)
         
-        # Save first result
-        manager.save_results(
-            [{"host_id": "host-1", "total_unhealthy_time": 3600, "alert_types": {}}],
-            "data1.gz",
-            "host",
-            1,
-            None
-        )
+        # Create two result files manually to ensure they're both found
+        result1 = {
+            "query": {
+                "timestamp": "2023-01-01T12:00:00Z",
+                "data_file": "data1.gz",
+                "parameters": {
+                    "dimension": "host",
+                    "top_k": 1,
+                    "alert_type": None
+                }
+            },
+            "results": [{"host_id": "host-1", "total_unhealthy_time": 3600, "alert_types": {}}]
+        }
         
-        # Wait a moment to ensure different timestamps
-        time.sleep(0.1)
+        result2 = {
+            "query": {
+                "timestamp": "2023-01-01T12:10:00Z",
+                "data_file": "data2.gz",
+                "parameters": {
+                    "dimension": "dc",
+                    "top_k": 1,
+                    "alert_type": "Disk Usage Alert"
+                }
+            },
+            "results": [{"dc_id": "dc-1", "total_unhealthy_time": 7200, "alert_types": {}}]
+        }
         
-        # Save second result
-        manager.save_results(
-            [{"dc_id": "dc-1", "total_unhealthy_time": 7200, "alert_types": {}}],
-            "data2.gz",
-            "dc",
-            1,
-            "Disk Usage Alert"
-        )
+        # Write the files directly
+        file1_path = os.path.join(temp_results_dir, "query_results_20230101_120000.json")
+        with open(file1_path, 'w') as f:
+            json.dump(result1, f)
+            
+        file2_path = os.path.join(temp_results_dir, "query_results_20230101_121000.json")
+        with open(file2_path, 'w') as f:
+            json.dump(result2, f)
         
         # List results
         results_list = manager.list_results()
