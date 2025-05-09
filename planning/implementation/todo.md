@@ -29,13 +29,13 @@ This checklist tracks progress on implementing the Alert Analysis System accordi
 - [x] Write unit tests for Index
 
 ### Prompt 4: Alert Lifecycle Processing
-- [ ] Implement AlertAnalyzer core
-- [ ] Add register_dimension method
-- [ ] Add process_event method
-- [ ] Add _update_indices_for_resolved_alert method
-- [ ] Add _update_entity_position method
-- [ ] Write unit tests for alert lifecycle
-- [ ] Add edge case handling
+- [x] Implement AlertAnalyzer core
+- [x] Add register_dimension method
+- [x] Add process_event method
+- [x] Add _update_indices_for_resolved_alert method
+- [x] Add _update_entity_position method
+- [x] Write unit tests for alert lifecycle
+- [x] Add edge case handling
 
 ### Prompt 5: Basic Query Engine Implementation
 - [ ] Implement get_top_k method
