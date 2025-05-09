@@ -6,22 +6,15 @@ This document outlines known limitations in the current implementation of the Al
 
 ### Issue Description
 
-The current implementation has a limitation in how it handles alert type filtering. When filtering by alert type, the system:
-
-1. Ranks entities based on their total unhealthy time across all alert types
-2. Includes only entities that have at least one alert of the specified type
-3. Does not recalculate unhealthy time to only include time from the specified alert type
+The current implementation does not support filtering by alert type. While the API still accepts an `alert_type` parameter for backward compatibility, it is ignored and a warning is logged.
 
 ### Impact
 
-This approach is problematic because it doesn't accurately represent the "unhealthiest" entities with respect to a specific alert type. For example:
-
-- A host with 10 hours of unhealthy time from "Disk Usage Alert" and 1 minute from "System Service Failed" will rank higher in "System Service Failed" queries than a host with 9 hours of unhealthy time solely from "System Service Failed"
-- The unhealthy time reported for entities doesn't reflect the actual time they were unhealthy due to the specified alert type
+Users cannot filter results to see only entities with specific alert types. All queries return the top k entities based on total unhealthy time across all alert types.
 
 ### Workaround
 
-Currently, there is no workaround for this limitation. Users should be aware that when filtering by alert type, the unhealthy time represents the total time across all alert types, not just the specified type.
+Currently, there is no workaround for this limitation. Users can examine the `alert_types` field in the results to see which alert types affected each entity.
 
 ### Future Solution
 
