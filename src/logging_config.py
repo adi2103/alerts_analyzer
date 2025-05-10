@@ -1,16 +1,16 @@
 """Logging configuration for the Alert Analysis System."""
 
-import logging
 import json
-import uuid
+import logging
 import os
+import uuid
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Any, Optional
 
 
 def configure_logging(
-        log_file: str = "alert_analyzer.log",
-        log_level: int = logging.INFO) -> None:
+    log_file: str = "alert_analyzer.log", log_level: int = logging.INFO
+) -> None:
     """
     Configure logging for the Alert Analysis System.
 
@@ -41,7 +41,8 @@ def configure_logging(
 
     # Create formatter
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
 
@@ -70,7 +71,7 @@ class StructuredLogFormatter(logging.Formatter):
             "level": record.levelname,
             "name": record.name,
             "message": record.getMessage(),
-            "correlation_id": getattr(record, "correlation_id", str(uuid.uuid4()))
+            "correlation_id": getattr(record, "correlation_id", str(uuid.uuid4())),
         }
 
         # Add extra fields if present
@@ -86,8 +87,9 @@ class StructuredLogFormatter(logging.Formatter):
         return json.dumps(log_data)
 
 
-def log_event_error(event: Any, error_type: str, details: str,
-                    logger: Optional[logging.Logger] = None) -> None:
+def log_event_error(
+    event: Any, error_type: str, details: str, logger: Optional[logging.Logger] = None
+) -> None:
     """
     Log an error related to an event.
 
@@ -106,17 +108,19 @@ def log_event_error(event: Any, error_type: str, details: str,
         "event_id": getattr(event, "event_id", None),
         "alert_id": getattr(event, "alert_id", None),
         "details": details,
-        "correlation_id": str(uuid.uuid4())
+        "correlation_id": str(uuid.uuid4()),
     }
 
     # Log the error
     logger.error(f"Error processing event: {error_type}", extra=extra)
 
 
-def log_performance_metrics(start_time: datetime,
-                            end_time: datetime,
-                            events_processed: int,
-                            logger: Optional[logging.Logger] = None) -> None:
+def log_performance_metrics(
+    start_time: datetime,
+    end_time: datetime,
+    events_processed: int,
+    logger: Optional[logging.Logger] = None,
+) -> None:
     """
     Log performance metrics.
 
@@ -139,9 +143,12 @@ def log_performance_metrics(start_time: datetime,
         "duration_seconds": duration,
         "events_processed": events_processed,
         "events_per_second": events_per_second,
-        "correlation_id": str(uuid.uuid4())
+        "correlation_id": str(uuid.uuid4()),
     }
 
     # Log the metrics
-    logger.info(f"Performance metrics: {events_processed} events in {duration:.2f} seconds "
-                f"({events_per_second:.2f} events/sec)", extra=extra)
+    logger.info(
+        f"Performance metrics: {events_processed} events in {duration:.2f} seconds "
+        f"({events_per_second:.2f} events/sec)",
+        extra=extra,
+    )

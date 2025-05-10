@@ -1,8 +1,7 @@
-#!/usr/bin/env python
 """
 Query Client for Alert Analysis System.
 
-This module provides a unified interface for querying the Alert Analysis Index Server
+This module provides a client for querying the Alert Analysis Index Server
 and managing analysis results.
 """
 
@@ -133,6 +132,7 @@ class QueryClient:
             for i, result in enumerate(results, 1):
                 output += f"{i}. {result['filename']}\n"
                 output += f"   Timestamp: {result['timestamp']}\n"
+                output += f"   Data File: {result['data_file']}\n"
                 output += f"   Query: Top {result['top_k']} {result['dimension']}s\n"
                 output += f"   Result Count: {result['result_count']}\n"
                 output += "-" * 80 + "\n"
@@ -161,6 +161,7 @@ class QueryClient:
 
                 output = f"Results from {filename}:\n"
                 output += f"Query: Top {top} unhealthiest {dimension}s\n"
+                output += f"Data File: {result['query']['data_file']}\n"
                 output += f"Timestamp: {result['query']['timestamp']}\n"
                 output += "=" * 80 + "\n"
 
@@ -270,6 +271,9 @@ def main():
                         params={"dimension": args.dimension, "top": args.top},
                     )
                     results_data = response.json()
+
+                # Use provided data file name or a default
+                data_file = args.data_file or "unknown_data_file"
 
                 # Save the results
                 filename = client.save_results(

@@ -1,10 +1,11 @@
 """Tests for the dimension indexing functionality."""
 
-import pytest
 from datetime import datetime
 
+import pytest
+
+from src.dimension_index import Index
 from src.models import AlertState, EntityState
-from src.indexing.dimension_index import Index
 
 
 class TestIndex:
@@ -26,11 +27,10 @@ class TestIndex:
         alert_state = AlertState(
             alert_id="alert-123",
             alert_type="Disk Usage Alert",
-            tags={"host": "host-456", "dc": "dc-789", "volume": "vol-123"}
+            tags={"host": "host-456", "dc": "dc-789", "volume": "vol-123"},
         )
         alert_state.start_time = datetime(2023, 1, 1, 12, 0, 0)
-        alert_state.end_time = datetime(
-            2023, 1, 1, 12, 10, 0)  # 10 minutes later
+        alert_state.end_time = datetime(2023, 1, 1, 12, 10, 0)  # 10 minutes later
         return alert_state
 
     def test_init(self, host_index):
@@ -87,16 +87,19 @@ class TestIndex:
         """Test getting top k entities."""
         # Add entities with different unhealthy times
         host_index.update_entity_position("host-456", 0, 600)
-        host_index.get_entity_state(
-            "host-456").alert_type_counts["Disk Usage Alert"] = 1
+        host_index.get_entity_state("host-456").alert_type_counts[
+            "Disk Usage Alert"
+        ] = 1
 
         host_index.update_entity_position("host-789", 0, 900)
-        host_index.get_entity_state(
-            "host-789").alert_type_counts["System Service Failed"] = 2
+        host_index.get_entity_state("host-789").alert_type_counts[
+            "System Service Failed"
+        ] = 2
 
         host_index.update_entity_position("host-123", 0, 300)
-        host_index.get_entity_state(
-            "host-123").alert_type_counts["Time Drift Alert"] = 1
+        host_index.get_entity_state("host-123").alert_type_counts[
+            "Time Drift Alert"
+        ] = 1
 
         # Get top 2 entities
         top_entities = host_index.get_top_k(2)
@@ -109,10 +112,8 @@ class TestIndex:
         assert top_entities["host-789"]["total_unhealthy_time"] == 900
         assert top_entities["host-456"]["total_unhealthy_time"] == 600
 
-        assert top_entities["host-789"]["alert_types"] == {
-            "System Service Failed": 2}
-        assert top_entities["host-456"]["alert_types"] == {
-            "Disk Usage Alert": 1}
+        assert top_entities["host-789"]["alert_types"] == {"System Service Failed": 2}
+        assert top_entities["host-456"]["alert_types"] == {"Disk Usage Alert": 1}
 
     def test_get_top_k_with_ties(self, host_index):
         """Test getting top k entities with ties in unhealthy time."""
@@ -131,9 +132,7 @@ class TestIndex:
 
         assert len(top_entities) == 2
         # Both host-456 and host-789 should be included (tie at 600)
-        assert all(
-            entity in top_entities for entity in [
-                "host-456", "host-789"])
+        assert all(entity in top_entities for entity in ["host-456", "host-789"])
         assert "host-123" not in top_entities
 
     def test_extractor_function(self, host_index, sample_alert_state):

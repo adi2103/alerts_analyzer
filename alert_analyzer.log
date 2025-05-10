@@ -171,3 +171,348 @@
 2025-05-10 14:59:50,563 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27786.10 events/sec)
 2025-05-10 14:59:50,563 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
 2025-05-10 15:01:54,172 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27868.85 events/sec)
+2025-05-10 16:15:49,221 - query_engine - ERROR - Error querying dimension unknown_dimension: Dimension not registered
+2025-05-10 16:19:42,830 - event_processor - ERROR - File not found: non_existent_file.gz
+2025-05-10 16:19:42,831 - event_processor - ERROR - Error processing file non_existent_file.gz: File not found: non_existent_file.gz
+2025-05-10 16:20:11,440 - event_processor - ERROR - File not found: non_existent_file.gz
+2025-05-10 16:20:11,440 - event_processor - ERROR - Error processing file non_existent_file.gz: File not found: non_existent_file.gz
+2025-05-10 16:49:44,465 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (11331.44 events/sec)
+2025-05-10 16:49:44,484 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (12307.69 events/sec)
+2025-05-10 16:49:44,488 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (14184.40 events/sec)
+2025-05-10 16:49:44,491 - event_processor - INFO - Performance metrics: 2 events in 0.00 seconds (10362.69 events/sec)
+2025-05-10 16:52:07,608 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (10309.28 events/sec)
+2025-05-10 16:52:07,625 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (12012.01 events/sec)
+2025-05-10 16:52:07,716 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (6069.80 events/sec)
+2025-05-10 16:52:07,720 - event_processor - INFO - Performance metrics: 2 events in 0.00 seconds (9433.96 events/sec)
+2025-05-10 16:54:08,608 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (11363.64 events/sec)
+2025-05-10 16:54:08,610 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (11173.18 events/sec)
+2025-05-10 16:54:08,612 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (14084.51 events/sec)
+2025-05-10 16:54:08,614 - event_processor - INFO - Performance metrics: 4 events in 0.00 seconds (15384.62 events/sec)
+2025-05-10 16:54:08,615 - event_processor - INFO - Performance metrics: 2 events in 0.00 seconds (10309.28 events/sec)
+2025-05-10 16:56:59,045 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (27140.65 events/sec)
+2025-05-10 17:29:35,068 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 17:29:35,105 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (27723.42 events/sec)
+2025-05-10 17:29:35,105 - index_server - INFO - Processed 1020 events
+2025-05-10 17:29:35,105 - index_server - INFO - Starting server on localhost:5000
+2025-05-10 17:29:35,112 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-05-10 17:29:35,112 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 17:38:07,701 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 17:38:07,738 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (27627.30 events/sec)
+2025-05-10 17:38:07,738 - index_server - INFO - Processed 1020 events
+2025-05-10 17:38:07,738 - index_server - INFO - Starting server on localhost:5000
+2025-05-10 17:38:07,746 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-05-10 17:38:07,746 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 17:42:08,021 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 17:42:08,058 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (27878.75 events/sec)
+2025-05-10 17:42:08,058 - index_server - INFO - Processed 1020 events
+2025-05-10 17:42:08,058 - index_server - INFO - Starting server on localhost:5000
+2025-05-10 17:42:08,110 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:5000
+2025-05-10 17:42:08,110 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 17:42:08,110 - werkzeug - INFO -  * Restarting with stat
+2025-05-10 17:42:08,235 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 17:42:08,271 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (28770.48 events/sec)
+2025-05-10 17:42:08,271 - index_server - INFO - Processed 1020 events
+2025-05-10 17:42:08,271 - index_server - INFO - Starting server on localhost:5000
+2025-05-10 17:42:08,290 - werkzeug - WARNING -  * Debugger is active!
+2025-05-10 17:42:08,309 - werkzeug - INFO -  * Debugger PIN: 132-256-792
+2025-05-10 17:47:15,066 - simple_index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 17:47:15,103 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (27714.38 events/sec)
+2025-05-10 17:47:15,103 - simple_index_server - INFO - Processed 1020 events
+2025-05-10 17:47:15,103 - simple_index_server - INFO - Starting server on localhost:5000
+2025-05-10 17:48:27,574 - simple_index_server - INFO - Server stopped by user
+2025-05-10 17:48:27,574 - simple_index_server - INFO - Server stopped
+2025-05-10 17:49:11,104 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 17:49:11,141 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (27957.46 events/sec)
+2025-05-10 17:49:11,141 - index_server - INFO - Processed 1020 events
+2025-05-10 17:49:11,141 - index_server - INFO - Starting server on localhost:8080
+2025-05-10 17:49:11,148 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:8080
+2025-05-10 17:49:11,148 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 17:49:45,445 - index_server - INFO - Request method: GET
+2025-05-10 17:49:45,445 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:49:45,445 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 17:49:45,445 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 17:49:45,445 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:49:45] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 17:52:08,522 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 17:52:08,559 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (28113.89 events/sec)
+2025-05-10 17:52:08,559 - index_server - INFO - Processed 1020 events
+2025-05-10 17:52:08,559 - index_server - INFO - Starting server on localhost:8080
+2025-05-10 17:52:08,566 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:8080
+2025-05-10 17:52:08,566 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 17:52:18,693 - index_server - INFO - Request method: GET
+2025-05-10 17:52:18,694 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:52:18,694 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 17:52:18,694 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 17:52:18,694 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:52:18] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 17:52:22,736 - index_server - INFO - Request method: GET
+2025-05-10 17:52:22,736 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:52:22,736 - index_server - INFO - Request args: {'dimension': 'host', 'top': '8'}
+2025-05-10 17:52:22,736 - index_server - INFO - Processing query: dimension=host, top=8
+2025-05-10 17:52:22,736 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:52:22] "GET /query?dimension=host&top=8 HTTP/1.1" 200 -
+2025-05-10 17:53:08,643 - index_server - INFO - Request method: GET
+2025-05-10 17:53:08,643 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:53:08,643 - index_server - INFO - Request args: {'dimension': 'dc', 'top': '8'}
+2025-05-10 17:53:08,643 - index_server - INFO - Processing query: dimension=dc, top=8
+2025-05-10 17:53:08,643 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:53:08] "GET /query?dimension=dc&top=8 HTTP/1.1" 200 -
+2025-05-10 17:53:28,483 - index_server - INFO - Request method: GET
+2025-05-10 17:53:28,483 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:53:28,483 - index_server - INFO - Request args: {'dimension': 'volume', 'top': '8'}
+2025-05-10 17:53:28,483 - index_server - INFO - Processing query: dimension=volume, top=8
+2025-05-10 17:53:28,484 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:53:28] "GET /query?dimension=volume&top=8 HTTP/1.1" 200 -
+2025-05-10 17:53:52,262 - index_server - INFO - Request method: GET
+2025-05-10 17:53:52,262 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:53:52,262 - index_server - INFO - Request args: {'dimension': 'service', 'top': '8'}
+2025-05-10 17:53:52,262 - index_server - INFO - Processing query: dimension=service, top=8
+2025-05-10 17:53:52,262 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:53:52] "GET /query?dimension=service&top=8 HTTP/1.1" 200 -
+2025-05-10 17:54:16,288 - index_server - INFO - Request method: GET
+2025-05-10 17:54:16,289 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:54:16,289 - index_server - INFO - Request args: {'dimension': 'service', 'top': '15'}
+2025-05-10 17:54:16,289 - index_server - INFO - Processing query: dimension=service, top=15
+2025-05-10 17:54:16,289 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:54:16] "GET /query?dimension=service&top=15 HTTP/1.1" 200 -
+2025-05-10 17:54:34,974 - index_server - INFO - Request method: GET
+2025-05-10 17:54:34,974 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 17:54:34,974 - index_server - INFO - Request args: {'dimension': 'service', 'top': '150'}
+2025-05-10 17:54:34,974 - index_server - INFO - Processing query: dimension=service, top=150
+2025-05-10 17:54:34,974 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 17:54:34] "GET /query?dimension=service&top=150 HTTP/1.1" 200 -
+2025-05-10 18:35:10,200 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 18:35:10,236 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (28285.41 events/sec)
+2025-05-10 18:35:10,237 - index_server - INFO - Processed 1020 events
+2025-05-10 18:35:10,237 - index_server - INFO - Starting server on localhost:8080
+2025-05-10 18:35:10,246 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:8080
+2025-05-10 18:35:10,246 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 18:35:13,855 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 18:35:13] "GET / HTTP/1.1" 200 -
+2025-05-10 18:35:13,990 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 18:35:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-10 20:02:21,877 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 20:02:21,913 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (28018.13 events/sec)
+2025-05-10 20:02:21,913 - index_server - INFO - Processed 1020 events
+2025-05-10 20:02:21,913 - index_server - INFO - Starting server on localhost:8080
+2025-05-10 20:02:21,924 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:8080
+2025-05-10 20:02:21,924 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 20:09:13,754 - index_server - INFO - Request method: GET
+2025-05-10 20:09:13,754 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 20:09:13,755 - index_server - INFO - Request args: {'dimension': 'service', 'top': '150'}
+2025-05-10 20:09:13,755 - index_server - INFO - Processing query: dimension=service, top=150
+2025-05-10 20:09:13,755 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 20:09:13] "GET /query?dimension=service&top=150 HTTP/1.1" 200 -
+2025-05-10 20:09:54,582 - index_server - INFO - Request method: GET
+2025-05-10 20:09:54,582 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 20:09:54,582 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 20:09:54,583 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 20:09:54,583 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 20:09:54] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 20:45:38,402 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp9pbqt4o6
+2025-05-10 20:45:38,402 - index_server - INFO - Processed 100 events
+2025-05-10 20:47:12,755 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpn9pzb0sj
+2025-05-10 20:47:12,755 - index_server - INFO - Processed 100 events
+2025-05-10 20:47:12,759 - index_server - INFO - Request method: POST
+2025-05-10 20:47:12,759 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 20:47:12,759 - index_server - INFO - Request args: {}
+2025-05-10 20:47:12,759 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 20:47:46,620 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpcax5sce0
+2025-05-10 20:47:46,620 - index_server - INFO - Processed 100 events
+2025-05-10 20:47:46,622 - index_server - INFO - Request method: POST
+2025-05-10 20:47:46,622 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 20:47:46,622 - index_server - INFO - Request args: {}
+2025-05-10 20:47:46,622 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 20:48:42,016 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpq79r1oji
+2025-05-10 20:48:42,016 - index_server - INFO - Processed 100 events
+2025-05-10 20:48:42,019 - index_server - INFO - Request method: POST
+2025-05-10 20:48:42,019 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 20:48:42,020 - index_server - INFO - Request args: {}
+2025-05-10 20:48:42,020 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 20:49:46,519 - index_server - INFO - Request method: GET
+2025-05-10 20:49:46,519 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 20:49:46,519 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 20:49:46,519 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 20:49:46,520 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 20:49:46] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 20:49:51,361 - index_server - INFO - Request method: GET
+2025-05-10 20:49:51,361 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 20:49:51,361 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 20:49:51,361 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 20:49:51,361 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 20:49:51] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 20:49:51,363 - index_server - INFO - Request method: GET
+2025-05-10 20:49:51,363 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 20:49:51,363 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 20:49:51,363 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 20:49:51,364 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 20:49:51] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 20:51:07,627 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpw3j9upr8
+2025-05-10 20:51:07,627 - index_server - INFO - Processed 100 events
+2025-05-10 20:51:07,631 - index_server - INFO - Request method: POST
+2025-05-10 20:51:07,631 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 20:51:07,631 - index_server - INFO - Request args: {}
+2025-05-10 20:51:07,631 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 20:51:47,219 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp5k3gmkhf
+2025-05-10 20:51:47,219 - index_server - INFO - Processed 100 events
+2025-05-10 20:51:47,224 - index_server - INFO - Request method: POST
+2025-05-10 20:51:47,224 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 20:51:47,224 - index_server - INFO - Request args: {}
+2025-05-10 20:51:47,224 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 20:56:45,897 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpxcxk4180
+2025-05-10 20:56:45,897 - index_server - INFO - Processed 100 events
+2025-05-10 20:56:45,900 - index_server - INFO - Request method: POST
+2025-05-10 20:56:45,900 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 20:56:45,900 - index_server - INFO - Request args: {}
+2025-05-10 20:56:45,900 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 20:58:49,355 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpm_oh651y
+2025-05-10 20:58:49,355 - index_server - INFO - Processed 100 events
+2025-05-10 20:58:49,360 - index_server - INFO - Request method: POST
+2025-05-10 20:58:49,360 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 20:58:49,360 - index_server - INFO - Request args: {}
+2025-05-10 20:58:49,360 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 21:01:32,345 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpjosf818g
+2025-05-10 21:01:32,345 - index_server - INFO - Processed 100 events
+2025-05-10 21:01:32,350 - index_server - INFO - Request method: POST
+2025-05-10 21:01:32,350 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 21:01:32,350 - index_server - INFO - Request args: {}
+2025-05-10 21:01:32,350 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 21:02:01,254 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpkuz__odw
+2025-05-10 21:02:01,254 - index_server - INFO - Processed 100 events
+2025-05-10 21:02:01,258 - index_server - INFO - Request method: POST
+2025-05-10 21:02:01,258 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 21:02:01,258 - index_server - INFO - Request args: {}
+2025-05-10 21:02:01,258 - index_server - INFO - Processing query: dimension=host, top=2
+2025-05-10 21:04:12,983 - index_server - INFO - Request method: GET
+2025-05-10 21:04:12,983 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:04:12,983 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:04:12,983 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:04:12,983 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:04:12] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:04:12,985 - index_server - INFO - Request method: GET
+2025-05-10 21:04:12,986 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:04:12,986 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:04:12,986 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:04:12,986 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:04:12] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:29:42,049 - index_server - INFO - Request method: GET
+2025-05-10 21:29:42,049 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:29:42,049 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:29:42,049 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:29:42,049 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:29:42] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:29:42,051 - index_server - INFO - Request method: GET
+2025-05-10 21:29:42,051 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:29:42,051 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:29:42,051 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:29:42,052 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:29:42] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:30:12,289 - index_server - INFO - Request method: GET
+2025-05-10 21:30:12,289 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:30:12,289 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:30:12,289 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:30:12,289 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:30:12] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:30:12,291 - index_server - INFO - Request method: GET
+2025-05-10 21:30:12,291 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:30:12,291 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:30:12,291 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:30:12,291 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:30:12] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:30:20,115 - index_server - INFO - Request method: GET
+2025-05-10 21:30:20,115 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:30:20,115 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:30:20,115 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:30:20,115 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:30:20] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:30:20,118 - index_server - INFO - Request method: GET
+2025-05-10 21:30:20,118 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:30:20,118 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:30:20,118 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:30:20,119 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:30:20] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:31:50,446 - index_server - INFO - Request method: GET
+2025-05-10 21:31:50,446 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:31:50,446 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:31:50,446 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:31:50,446 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:31:50] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:31:50,449 - index_server - INFO - Request method: GET
+2025-05-10 21:31:50,449 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:31:50,449 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:31:50,449 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:31:50,449 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:31:50] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:32:03,987 - index_server - INFO - Request method: GET
+2025-05-10 21:32:03,987 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:32:03,987 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:32:03,987 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:32:03,987 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:32:03] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:32:03,990 - index_server - INFO - Request method: GET
+2025-05-10 21:32:03,990 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:32:03,990 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:32:03,990 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:32:03,990 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:32:03] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:32:36,574 - index_server - INFO - Request method: GET
+2025-05-10 21:32:36,574 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:32:36,574 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:32:36,574 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:32:36,574 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:32:36] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:32:36,576 - index_server - INFO - Request method: GET
+2025-05-10 21:32:36,576 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:32:36,576 - index_server - INFO - Request args: {'dimension': 'host', 'top': '5'}
+2025-05-10 21:32:36,577 - index_server - INFO - Processing query: dimension=host, top=5
+2025-05-10 21:32:36,577 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:32:36] "GET /query?dimension=host&top=5 HTTP/1.1" 200 -
+2025-05-10 21:33:28,559 - index_server - INFO - Request method: GET
+2025-05-10 21:33:28,559 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:33:28,559 - index_server - INFO - Request args: {'dimension': 'host', 'top': '50'}
+2025-05-10 21:33:28,559 - index_server - INFO - Processing query: dimension=host, top=50
+2025-05-10 21:33:28,559 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:33:28] "GET /query?dimension=host&top=50 HTTP/1.1" 200 -
+2025-05-10 21:33:28,563 - index_server - INFO - Request method: GET
+2025-05-10 21:33:28,563 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:33:28,563 - index_server - INFO - Request args: {'dimension': 'host', 'top': '50'}
+2025-05-10 21:33:28,563 - index_server - INFO - Processing query: dimension=host, top=50
+2025-05-10 21:33:28,563 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:33:28] "GET /query?dimension=host&top=50 HTTP/1.1" 200 -
+2025-05-10 21:56:05,385 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 21:56:05,422 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (28093.76 events/sec)
+2025-05-10 21:56:05,422 - index_server - INFO - Processed 1020 events
+2025-05-10 21:56:05,422 - index_server - INFO - Starting server on localhost:8080
+2025-05-10 21:56:05,430 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:8080
+2025-05-10 21:56:05,430 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 21:56:26,456 - index_server - INFO - Request method: GET
+2025-05-10 21:56:26,456 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:56:26,456 - index_server - INFO - Request args: {'dimension': 'type', 'top': '50'}
+2025-05-10 21:56:26,456 - index_server - INFO - Processing query: dimension=type, top=50
+2025-05-10 21:56:26,457 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:56:26] "GET /query?dimension=type&top=50 HTTP/1.1" 200 -
+2025-05-10 21:56:26,459 - index_server - INFO - Request method: GET
+2025-05-10 21:56:26,459 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:56:26,459 - index_server - INFO - Request args: {'dimension': 'type', 'top': '50'}
+2025-05-10 21:56:26,459 - index_server - INFO - Processing query: dimension=type, top=50
+2025-05-10 21:56:26,459 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:56:26] "GET /query?dimension=type&top=50 HTTP/1.1" 200 -
+2025-05-10 21:57:07,176 - index_server - INFO - Request method: GET
+2025-05-10 21:57:07,176 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:57:07,176 - index_server - INFO - Request args: {'dimension': 'type', 'top': '50'}
+2025-05-10 21:57:07,176 - index_server - INFO - Processing query: dimension=type, top=50
+2025-05-10 21:57:07,177 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:57:07] "GET /query?dimension=type&top=50 HTTP/1.1" 200 -
+2025-05-10 21:57:07,179 - index_server - INFO - Request method: GET
+2025-05-10 21:57:07,180 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:57:07,180 - index_server - INFO - Request args: {'dimension': 'type', 'top': '50'}
+2025-05-10 21:57:07,180 - index_server - INFO - Processing query: dimension=type, top=50
+2025-05-10 21:57:07,180 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:57:07] "GET /query?dimension=type&top=50 HTTP/1.1" 200 -
+2025-05-10 21:57:11,349 - index_server - INFO - Processing file: data/Alert_Event_Data.gz
+2025-05-10 21:57:11,386 - event_processor - INFO - Performance metrics: 1020 events in 0.04 seconds (27903.92 events/sec)
+2025-05-10 21:57:11,386 - index_server - INFO - Processed 1020 events
+2025-05-10 21:57:11,386 - index_server - INFO - Starting server on localhost:8080
+2025-05-10 21:57:11,392 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://localhost:8080
+2025-05-10 21:57:11,392 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-10 21:57:12,954 - index_server - INFO - Request method: GET
+2025-05-10 21:57:12,954 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+2025-05-10 21:57:12,954 - index_server - INFO - Request args: {'dimension': 'type', 'top': '50'}
+2025-05-10 21:57:12,954 - index_server - INFO - Processing query: dimension=type, top=50
+2025-05-10 21:57:12,954 - query_engine - ERROR - Error querying dimension type: Dimension type not registered
+2025-05-10 21:57:12,955 - index_server - ERROR - Error processing query: Dimension type not registered
+2025-05-10 21:57:12,955 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:57:12] "[35m[1mGET /query?dimension=type&top=50 HTTP/1.1[0m" 500 -
+2025-05-10 21:57:12,957 - index_server - INFO - Request method: POST
+2025-05-10 21:57:12,957 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '32'}
+2025-05-10 21:57:12,957 - index_server - INFO - Request args: {}
+2025-05-10 21:57:12,958 - index_server - INFO - Processing query: dimension=type, top=50
+2025-05-10 21:57:12,958 - query_engine - ERROR - Error querying dimension type: Dimension type not registered
+2025-05-10 21:57:12,958 - index_server - ERROR - Error processing query: Dimension type not registered
+2025-05-10 21:57:12,958 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:57:12] "[35m[1mPOST /query HTTP/1.1[0m" 500 -
+2025-05-10 21:57:12,960 - index_server - INFO - Request method: GET
+2025-05-10 21:57:12,960 - index_server - INFO - Request headers: {'Host': 'localhost:8080', 'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive'}
+2025-05-10 21:57:12,960 - index_server - INFO - Request args: {'dimension': 'type', 'top': '50'}
+2025-05-10 21:57:12,960 - index_server - INFO - Processing query: dimension=type, top=50
+2025-05-10 21:57:12,960 - query_engine - ERROR - Error querying dimension type: Dimension type not registered
+2025-05-10 21:57:12,960 - index_server - ERROR - Error processing query: Dimension type not registered
+2025-05-10 21:57:12,961 - werkzeug - INFO - 127.0.0.1 - - [10/May/2025 21:57:12] "[35m[1mGET /query?dimension=type&top=50 HTTP/1.1[0m" 500 -
+2025-05-10 22:28:19,796 - index_server - INFO - Processing file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpbjre5re9
+2025-05-10 22:28:19,796 - index_server - INFO - Processed 100 events
+2025-05-10 22:28:19,801 - index_server - INFO - Request method: POST
+2025-05-10 22:28:19,801 - index_server - INFO - Request headers: {'User-Agent': 'Werkzeug/3.1.3', 'Host': 'localhost', 'Content-Type': 'application/json', 'Content-Length': '31'}
+2025-05-10 22:28:19,801 - index_server - INFO - Request args: {}
+2025-05-10 22:28:19,801 - index_server - INFO - Processing query: dimension=host, top=2

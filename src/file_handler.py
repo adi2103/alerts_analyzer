@@ -5,10 +5,10 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Iterator, List, Optional, Union, Dict, Any
+from typing import Iterator, List, Optional, Union
 
 from src.models import AlertEvent
-from src.utils.logging_config import log_event_error
+from src.logging_config import log_event_error
 
 
 class FileHandler:
@@ -61,7 +61,7 @@ class FileHandler:
         try:
             # Open file with appropriate method
             opener = gzip.open if is_gzipped else open
-            mode = 'rt' if is_gzipped else 'r'
+            mode = "rt" if is_gzipped else "r"
 
             with opener(file_path, mode) as f:
                 line_number = 0
@@ -84,16 +84,20 @@ class FileHandler:
                             {"line_number": line_number},
                             "json_decode_error",
                             f"Invalid JSON at line {line_number}: {e}",
-                            self.logger
+                            self.logger,
                         )
 
                     except ValueError as e:
                         log_event_error(
-                            event_data if 'event_data' in locals() else {
-                                "line_number": line_number},
+                            (
+                                event_data
+                                if "event_data" in locals()
+                                else {"line_number": line_number}
+                            ),
                             "validation_error",
                             f"Invalid event data at line {line_number}: {e}",
-                            self.logger)
+                            self.logger,
+                        )
 
         except gzip.BadGzipFile:
             error_msg = f"Not a valid gzip file: {file_path}"
@@ -105,9 +109,7 @@ class FileHandler:
             self.logger.error(error_msg)
             raise
 
-    def read_events_list(self,
-                         file_path: Union[str,
-                                          Path]) -> List[AlertEvent]:
+    def read_events_list(self, file_path: Union[str, Path]) -> List[AlertEvent]:
         """
         Read all alert events from the file into a list.
 
@@ -135,13 +137,13 @@ class FileHandler:
         file_path = Path(file_path)
 
         # Check file extension first
-        if file_path.suffix.lower() == '.gz':
+        if file_path.suffix.lower() == ".gz":
             return True
 
         # Check file magic number
         try:
-            with open(file_path, 'rb') as f:
+            with open(file_path, "rb") as f:
                 magic = f.read(2)
-                return magic == b'\x1f\x8b'  # gzip magic number
+                return magic == b"\x1f\x8b"  # gzip magic number
         except IOError:
             return False

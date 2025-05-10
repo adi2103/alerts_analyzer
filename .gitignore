@@ -3,6 +3,9 @@
 archive
 data/Alert_Event_Data
 original
+doc
+.coverage
+alert_analyzer.log
 dist
 build
 *.pyc

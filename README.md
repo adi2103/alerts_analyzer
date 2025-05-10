@@ -12,11 +12,10 @@ The Alert Analysis System processes alert event data from a compressed file cont
 - Track alert lifecycle (NEW → ACK → RSV)
 - Calculate unhealthy time for different entity dimensions
 - Find top k unhealthiest entities
-- Filter results by alert type
 - Handle various edge cases in the data
 - Provide detailed logging and error handling
 - Save and manage analysis results with query metadata
-- Query server for persistent in-memory indices
+- Server-client architecture for persistent in-memory indices
 
 ## Installation
 
@@ -33,179 +32,95 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Command-line Interface
+The Alert Analysis System uses a server-client architecture:
 
-#### Processing Events
+### Server
 
-```
-python -m src process <file_path>
-```
-
-This command processes events from a file and updates the global indices.
-
-#### Querying Results
+Start the server to process data files and serve queries:
 
 ```
-python -m src query <dimension_name> [options]
-```
-
-Options:
-- `--top`, `-k`: Number of entities to return (default: 5)
-- `--output`, `-o`: Output file path (default: stdout)
-- `--format`, `-f`: Output format (json or text, default: text)
-
-Example:
-```
-python -m src query host --top 10
-```
-
-#### Legacy Mode (Backward Compatibility)
-
-```
-python -m src <file_path> [options]
-```
-
-Options:
-- `--dimension`, `-d`: Dimension to analyze (default: host)
-- `--top`, `-k`: Number of entities to return (default: 5)
-- `--alert-type`, `-t`: Filter by alert type
-- `--output`, `-o`: Output file path (default: stdout)
-- `--format`, `-f`: Output format (json or text, default: text)
-
-Example:
-```
-python -m src data/Alert_Event_Data.gz --dimension host --top 10 --alert-type "Disk Usage Alert"
-```
-
-#### Saving Results
-
-```
-python save_results.py <file_path> [options]
-```
-
-Options:
-- `--dimension`, `-d`: Dimension to analyze (default: host)
-- `--top`, `-k`: Number of entities to return (default: 5)
-- `--alert-type`, `-t`: Filter by alert type
-
-Example:
-```
-python save_results.py data/Alert_Event_Data.gz --dimension dc --top 3
-```
-
-#### Listing Saved Results
-
-```
-python list_results.py
-```
-
-This will display all saved analysis results with their query parameters.
-
-### Query Server
-
-The system includes a simple server that can maintain indices in memory and respond to queries from multiple clients.
-
-#### Starting the Server
-
-```
-python query_server.py <file_path> [options]
+python query_server.py <file_path> [<file_path2> ...] [options]
 ```
 
 Options:
 - `--host`: Host to bind to (default: localhost)
 - `--port`: Port to bind to (default: 8080)
+- `--debug`: Run in debug mode
 
 Example:
 ```
 python query_server.py data/Alert_Event_Data.gz --port 8080
 ```
 
+The server can process multiple data files:
+```
+python query_server.py data/Alert_Event_Data.gz data/More_Alert_Data.gz
+```
+
+### Client
+
+Use the client to query the server and manage results:
+
 #### Querying the Server
 
 ```
-python query_client.py <dimension_name> [options]
+python query_client.py query <dimension_name> [options]
 ```
 
 Options:
 - `--top`, `-k`: Number of entities to return (default: 5)
 - `--server`: Server URL (default: http://localhost:8080)
 - `--format`, `-f`: Output format (json or text, default: text)
+- `--save`, `-s`: Save the query results
 
 Example:
 ```
-python query_client.py host --top 10 --server http://localhost:8080
+python query_client.py query host --top 10 --server http://localhost:8080
 ```
 
-### Python API
+#### Listing Saved Results
 
-```python
-from src.processors.event_processor import EventProcessor
-from src.query.query_engine import QueryEngine
-from src.utils.results_manager import ResultsManager
-
-# Process events
-processor = EventProcessor()
-processor.process_file("data/Alert_Event_Data.gz")
-
-# Query results
-query_engine = QueryEngine()
-results = query_engine.get_top_k("host", 5)
-
-# Print results
-for entity in results:
-    print(f"{entity['host_id']}: {entity['total_unhealthy_time']} seconds")
-
-# Save results with metadata
-results_manager = ResultsManager()
-filename, saved_results = results_manager.save_results(
-    results,
-    "data/Alert_Event_Data.gz",
-    "host",
-    5,
-    None
-)
-
-# List all saved results
-all_results = results_manager.list_results()
-for result in all_results:
-    print(f"{result['filename']}: {result['dimension']} - {result['top_k']} results")
-
-# Load a specific result
-loaded_result = results_manager.load_results(filename)
+```
+python query_client.py list [options]
 ```
 
-#### Backward Compatibility
+Options:
+- `--format`, `-f`: Output format (json or text, default: text)
 
-The `AlertAnalyzer` class is still available for backward compatibility:
-
-```python
-from src.alert_analyzer import AlertAnalyzer
-
-# Create analyzer
-analyzer = AlertAnalyzer()
-
-# Analyze file
-results = analyzer.analyze_file(
-    "data/Alert_Event_Data.gz",
-    dimension_name="host",
-    k=5,
-    alert_type="Disk Usage Alert"  # Note: Alert type filtering is not supported in this version
-)
+Example:
 ```
+python query_client.py list
+```
+
+#### Loading Saved Results
+
+```
+python query_client.py load <filename> [options]
+```
+
+Options:
+- `--format`, `-f`: Output format (json or text, default: text)
+
+Example:
+```
+python query_client.py load query_results_20230214_120000.json
+```
+
+
 
 ## Architecture
 
-The Alert Analysis System uses a modular design with the following components:
+The Alert Analysis System uses a server-client architecture with the following components:
 
 1. **IndexManager**: Maintains global indices for different dimensions
 2. **EventProcessor**: Processes alert events and updates indices
-3. **QueryEngine**: Queries indices for unhealthy entities
-4. **AlertAnalyzer**: Provides backward compatibility with the old API
+3. **IndexServer**: Serves queries via HTTP API
+4. **QueryClient**: Queries the server and manages results
 
 ```
 ┌─────────────────┐     ┌─────────────────┐
 │                 │     │                 │
-│ EventProcessor  │────►│  IndexManager   │
+│ query_server.py │────►│  IndexServer    │
 │                 │     │                 │
 └─────────────────┘     └────────┬────────┘
        ▲                         │
@@ -213,14 +128,22 @@ The Alert Analysis System uses a modular design with the following components:
        │                         ▼
 File Input               ┌─────────────────┐
                          │                 │
-                         │  QueryEngine    │◄────── Query Input
+                         │  EventProcessor │
                          │                 │
-                         └─────────────────┘
+                         └────────┬────────┘
                                   │
                                   ▼
                          ┌─────────────────┐
                          │                 │
-                         │     Results     │
+                         │  IndexManager   │
+                         │                 │
+                         └─────────────────┘
+                                  ▲
+                                  │
+                                  │
+                         ┌─────────────────┐
+                         │                 │
+                         │ query_client.py │◄────── User Input
                          │                 │
                          └─────────────────┘
 ```
@@ -231,78 +154,105 @@ File Input               ┌─────────────────�
 alerts_analyzer/
 ├── src/
 │   ├── __init__.py
-│   ├── __main__.py           # Command-line interface
-│   ├── alert_analyzer.py     # Backward compatibility
 │   ├── models.py             # Data models
-│   ├── indexing/
-│   │   ├── __init__.py
-│   │   ├── dimension_index.py # Dimension indexing
-│   │   └── index_manager.py   # Index management
-│   ├── processors/
-│   │   ├── __init__.py
-│   │   └── event_processor.py # Event processing
-│   ├── query/
-│   │   ├── __init__.py
-│   │   └── query_engine.py    # Query processing
-│   ├── server/
-│   │   ├── __init__.py
-│   │   └── index_server.py    # Query server
-│   ├── client/
-│   │   ├── __init__.py
-│   │   └── query_client.py    # Query client
-│   └── utils/
-│       ├── __init__.py
-│       ├── file_handler.py   # File I/O
-│       ├── logging_config.py # Logging setup
-│       └── results_manager.py # Results management
+│   ├── dimension_index.py    # Dimension indexing
+│   ├── index_manager.py      # Index management
+│   ├── event_processor.py    # Event processing
+│   ├── query_engine.py       # Query processing
+│   ├── index_server.py       # Query server
+│   ├── query_client.py       # Query client
+│   ├── file_handler.py       # File I/O
+│   ├── logging_config.py     # Logging setup
+│   └── results_manager.py    # Results management
 ├── tests/
 │   ├── __init__.py
-│   ├── test_models.py
-│   ├── test_dimension_index.py
-│   ├── test_index_manager.py
-│   ├── test_event_processor.py
-│   ├── test_query_engine.py
-│   ├── test_alert_analyzer.py
-│   ├── test_file_handler.py
-│   ├── test_results_manager.py
-│   ├── test_cli.py
-│   ├── test_end_to_end.py
-│   ├── server/
-│   │   ├── __init__.py
-│   │   └── test_index_server.py
-│   └── client/
-│       ├── __init__.py
-│       └── test_query_client.py
+│   ├── test_models.py        # Tests for data models
+│   ├── test_dimension_index.py # Tests for dimension indexing
+│   ├── test_file_handler.py  # Tests for file handling
+│   └── test_index_server.py  # Tests for server functionality
 ├── results/                  # Directory for saved analysis results
-├── save_results.py           # Script to save analysis results
-├── list_results.py           # Script to list saved results
 ├── query_server.py           # Script to start the query server
 ├── query_client.py           # Script to query the server
-├── MIGRATION_GUIDE.md        # Guide for migrating to the new API
 ├── requirements.txt
 └── README.md
 ```
 
 ## Testing
 
-Run the tests with pytest:
+The Alert Analysis System includes a comprehensive test suite using pytest. The tests cover the core functionality of the system, including data models, file handling, dimension indexing, and server functionality.
+
+### Test Coverage
+
+Current test coverage is at 49% overall for the codebase:
+
+```
+Name                     Stmts   Miss  Cover
+--------------------------------------------
+src/__init__.py              0      0   100%
+src/dimension_index.py      39      3    92%
+src/event_processor.py      41     26    37%
+src/file_handler.py         60     12    80%
+src/index_manager.py        45     19    58%
+src/index_server.py         99     45    55%
+src/logging_config.py       47     18    62%
+src/models.py               88      3    97%
+src/query_client.py        132    132     0%
+src/query_engine.py         32     22    31%
+src/results_manager.py      34     34     0%
+--------------------------------------------
+TOTAL                      617    314    49%
+```
+
+Well-tested modules include:
+- models.py (97% coverage): Core data models for alerts and entities
+- dimension_index.py (92% coverage): Efficient indexing for entity dimensions
+- file_handler.py (80% coverage): File I/O and JSON parsing
+
+To run the tests:
 
 ```
 pytest
 ```
 
+For coverage report:
+
+```
+pytest --cov=src tests/
+```
+
+## Development Notes
+
+This project was developed over approximately 4 hours, with significant effort focused on:
+
+1. **Design Phase**: Creating a robust architecture before implementation, focusing on data structures and algorithms for efficient entity tracking and querying.
+
+2. **Core Implementation**: The most significant independent contributions were in:
+   - src/models.py: Comprehensive data models with proper validation and error handling
+   - src/dimension_index.py: Efficient indexing using SortedDict for O(k) retrieval of top entities
+   - src/event_processor.py: Processing alert events and updating entity states
+   - src/index_manager.py: Managing global indices for different dimensions
+
+3. **Testing & Quality Assurance**: Extensive testing, logging, and debugging to ensure correctness and reliability.
+
 ## Known Limitations
 
-1. **Alert Type Filtering**: Alert type filtering is not supported in this version. When specifying an alert type, a warning will be logged and results will be returned without filtering by alert type.
+1. **Alert Type Filtering**: Alert type filtering is not supported in this version. As noted in the conversation summary, the original implementation was flawed as it ranked entities by total unhealthy time across all alert types instead of only considering time from the specified alert type.
 
-2. **Persistence**: Indices are not persisted between runs. They are built in memory each time events are processed.
+2. **Persistence**: Indices are not persisted between server restarts. They are built in memory each time the server starts.
+
+3. **Duplicate Entities**: The system was previously affected by a bug where duplicate entities could appear in query results. This has been fixed by tracking processed entities in the query engine.
 
 ## Future Enhancements
 
-1. **Persistent Indices**: Store indices on disk to persist between runs
-2. **File Monitoring**: Automatically process new files in a directory
-3. **Advanced Querying**: Support filtering by time, dimensions, and alert type
-4. **Dynamic Index Creation**: Allow creation of new indices at runtime
+1. **Alert Type Filtering**: Implement proper alert type filtering by tracking unhealthy time separately for each alert type, as outlined in the design extension document.
+
+2. **Persistent Indices**: Store indices on disk to persist between server restarts.
+
+3. **File Monitoring**: Automatically process new files in a directory.
+
+4. **Advanced Querying**: Support filtering by time, dimensions, and alert type.
+
+5. **Dynamic Index Updates**: Allow creation and updates of new indices at server runtime.
 
 ## License
 

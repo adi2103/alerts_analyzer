@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """
-Start the Alert Analysis Index Server.
+Alert Analysis Index Server.
 
-This script is a convenience wrapper for starting the index server.
+This script starts a server that processes alert events and maintains indices in memory,
+allowing for queries from multiple clients.
 """
 
-from src.server.index_server import main
+from src.index_server import main
 
 if __name__ == "__main__":
     exit(main())

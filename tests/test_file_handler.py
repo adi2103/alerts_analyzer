@@ -3,12 +3,13 @@
 import gzip
 import json
 import os
-import pytest
 import tempfile
 from pathlib import Path
 
-from src.utils.file_handler import FileHandler
+import pytest
+
 from src.models import AlertEvent
+from src.file_handler import FileHandler
 
 
 class TestFileHandler:
@@ -17,37 +18,39 @@ class TestFileHandler:
     @pytest.fixture
     def sample_event_data(self):
         """Sample event data for testing."""
-        return [{"event_id": "event-123",
-                 "alert_id": "alert-456",
-                 "timestamp": "2023-01-01T12:00:00Z",
-                 "state": "NEW",
-                 "type": "Disk Usage Alert",
-                 "tags": {"host": "host-789",
-                          "dc": "dc-123",
-                          "volume": "vol-456"}},
-                {"event_id": "event-124",
-                 "alert_id": "alert-456",
-                 "timestamp": "2023-01-01T12:05:00Z",
-                 "state": "ACK",
-                 "type": "Disk Usage Alert",
-                 "tags": {"host": "host-789",
-                          "dc": "dc-123",
-                          "volume": "vol-456"}},
-                {"event_id": "event-125",
-                 "alert_id": "alert-456",
-                 "timestamp": "2023-01-01T12:10:00Z",
-                 "state": "RSV",
-                 "type": "Disk Usage Alert",
-                 "tags": {"host": "host-789",
-                          "dc": "dc-123",
-                          "volume": "vol-456"}}]
+        return [
+            {
+                "event_id": "event-123",
+                "alert_id": "alert-456",
+                "timestamp": "2023-01-01T12:00:00Z",
+                "state": "NEW",
+                "type": "Disk Usage Alert",
+                "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
+            },
+            {
+                "event_id": "event-124",
+                "alert_id": "alert-456",
+                "timestamp": "2023-01-01T12:05:00Z",
+                "state": "ACK",
+                "type": "Disk Usage Alert",
+                "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
+            },
+            {
+                "event_id": "event-125",
+                "alert_id": "alert-456",
+                "timestamp": "2023-01-01T12:10:00Z",
+                "state": "RSV",
+                "type": "Disk Usage Alert",
+                "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
+            },
+        ]
 
     @pytest.fixture
     def sample_json_file(self, sample_event_data):
         """Create a sample JSON file for testing."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".json") as f:
             for event in sample_event_data:
-                f.write(json.dumps(event) + '\n')
+                f.write(json.dumps(event) + "\n")
 
         file_path = Path(f.name)
         yield file_path
@@ -59,10 +62,10 @@ class TestFileHandler:
     @pytest.fixture
     def sample_gzip_file(self, sample_event_data):
         """Create a sample gzipped JSON file for testing."""
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.gz') as f:
-            with gzip.open(f, 'wt') as gz:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".gz") as f:
+            with gzip.open(f, "wt") as gz:
                 for event in sample_event_data:
-                    gz.write(json.dumps(event) + '\n')
+                    gz.write(json.dumps(event) + "\n")
 
         file_path = Path(f.name)
         yield file_path
@@ -74,13 +77,17 @@ class TestFileHandler:
     @pytest.fixture
     def invalid_json_file(self):
         """Create a file with invalid JSON for testing."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".json") as f:
             # Write valid JSON events that will pass validation
-            f.write('{"event_id": "event-123", "alert_id": "alert-456", "timestamp": "2023-01-01T12:00:00Z", "state": "NEW", "type": "Disk Usage Alert", "tags": {"host": "host-789"}}\n')
+            f.write(
+                '{"event_id": "event-123", "alert_id": "alert-456", "timestamp": "2023-01-01T12:00:00Z", "state": "NEW", "type": "Disk Usage Alert", "tags": {"host": "host-789"}}\n'
+            )
             # Write invalid JSON that will fail parsing
             f.write('{"event_id": "event-124", "alert_id": "alert-457",\n')
             # Write another valid JSON event
-            f.write('{"event_id": "event-125", "alert_id": "alert-458", "timestamp": "2023-01-01T12:00:00Z", "state": "NEW", "type": "Disk Usage Alert", "tags": {"host": "host-789"}}\n')
+            f.write(
+                '{"event_id": "event-125", "alert_id": "alert-458", "timestamp": "2023-01-01T12:00:00Z", "state": "NEW", "type": "Disk Usage Alert", "tags": {"host": "host-789"}}\n'
+            )
 
         file_path = Path(f.name)
         yield file_path
@@ -92,8 +99,8 @@ class TestFileHandler:
     @pytest.fixture
     def invalid_gzip_file(self):
         """Create an invalid gzip file for testing."""
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.gz') as f:
-            f.write(b'This is not a valid gzip file')
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".gz") as f:
+            f.write(b"This is not a valid gzip file")
 
         file_path = Path(f.name)
         yield file_path
@@ -120,10 +127,10 @@ class TestFileHandler:
         assert all(isinstance(event, AlertEvent) for event in events)
 
         # Check first event
-        assert events[0].event_id == sample_event_data[0]['event_id']
-        assert events[0].alert_id == sample_event_data[0]['alert_id']
-        assert events[0].state == sample_event_data[0]['state']
-        assert events[0].type == sample_event_data[0]['type']
+        assert events[0].event_id == sample_event_data[0]["event_id"]
+        assert events[0].alert_id == sample_event_data[0]["alert_id"]
+        assert events[0].state == sample_event_data[0]["state"]
+        assert events[0].type == sample_event_data[0]["type"]
 
     def test_read_gzip_file(self, sample_gzip_file, sample_event_data):
         """Test reading events from a gzipped file."""
@@ -134,10 +141,10 @@ class TestFileHandler:
         assert all(isinstance(event, AlertEvent) for event in events)
 
         # Check first event
-        assert events[0].event_id == sample_event_data[0]['event_id']
-        assert events[0].alert_id == sample_event_data[0]['alert_id']
-        assert events[0].state == sample_event_data[0]['state']
-        assert events[0].type == sample_event_data[0]['type']
+        assert events[0].event_id == sample_event_data[0]["event_id"]
+        assert events[0].alert_id == sample_event_data[0]["alert_id"]
+        assert events[0].state == sample_event_data[0]["state"]
+        assert events[0].type == sample_event_data[0]["type"]
 
     def test_read_events_list(self, sample_json_file, sample_event_data):
         """Test reading all events into a list."""

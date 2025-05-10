@@ -18,7 +18,6 @@ Results are saved in a structured JSON format that includes both query metadata 
 {
   "query": {
     "timestamp": "2025-05-09T07:04:43.762144",
-    "data_file": "data/Alert_Event_Data.gz",
     "parameters": {
       "dimension": "host",
       "top_k": 3,

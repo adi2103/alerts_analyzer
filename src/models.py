@@ -1,9 +1,10 @@
 """Data models for the Alert Analysis System."""
 
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Any, Union, Set
 import json
 from collections import defaultdict
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
+
 from dateutil import parser
 
 
@@ -22,7 +23,7 @@ class AlertEvent:
         timestamp: datetime,
         state: str,
         alert_type: str,
-        tags: Dict[str, Any]
+        tags: Dict[str, Any],
     ):
         """
         Initialize an AlertEvent.
@@ -43,7 +44,7 @@ class AlertEvent:
         self.tags = tags
 
     @classmethod
-    def from_json(cls, json_data: Union[str, Dict]) -> 'AlertEvent':
+    def from_json(cls, json_data: Union[str, Dict]) -> "AlertEvent":
         """
         Create an AlertEvent from JSON data.
 
@@ -63,34 +64,28 @@ class AlertEvent:
             data = json_data
 
         # Validate required fields
-        required_fields = [
-            'event_id',
-            'alert_id',
-            'timestamp',
-            'state',
-            'type',
-            'tags']
+        required_fields = ["event_id", "alert_id", "timestamp", "state", "type", "tags"]
         for field in required_fields:
             if field not in data:
                 raise ValueError(f"Missing required field: {field}")
 
         # Validate state
-        if data['state'] not in ['NEW', 'ACK', 'RSV']:
+        if data["state"] not in ["NEW", "ACK", "RSV"]:
             raise ValueError(f"Invalid state: {data['state']}")
 
         # Parse timestamp
         try:
-            timestamp = parser.parse(data['timestamp'])
+            timestamp = parser.parse(data["timestamp"])
         except (ValueError, TypeError):
             raise ValueError(f"Invalid timestamp: {data['timestamp']}")
 
         return cls(
-            event_id=data['event_id'],
-            alert_id=data['alert_id'],
+            event_id=data["event_id"],
+            alert_id=data["alert_id"],
             timestamp=timestamp,
-            state=data['state'],
-            alert_type=data['type'],
-            tags=data['tags']
+            state=data["state"],
+            alert_type=data["type"],
+            tags=data["tags"],
         )
 
     def __repr__(self) -> str:
@@ -98,10 +93,12 @@ class AlertEvent:
         return (
             f"AlertEvent(event_id={
                 self.event_id}, alert_id={
-                self.alert_id}, " f"timestamp={
+                self.alert_id}, "
+            f"timestamp={
                 self.timestamp}, state={
                     self.state}, type={
-                        self.type})")
+                        self.type})"
+        )
 
 
 class AlertState:
@@ -144,9 +141,9 @@ class AlertState:
         self.current_state = state
 
         # Update start/end times
-        if state in ['NEW', 'ACK'] and self.start_time is None:
+        if state in ["NEW", "ACK"] and self.start_time is None:
             self.start_time = timestamp
-        elif state == 'RSV':
+        elif state == "RSV":
             self.end_time = timestamp
 
     def is_active(self) -> bool:
@@ -156,7 +153,7 @@ class AlertState:
         Returns:
             True if the alert is active, False otherwise
         """
-        return self.current_state in ['NEW', 'ACK']
+        return self.current_state not in ["RSV"]
 
     def get_duration(self) -> Optional[float]:
         """
@@ -172,8 +169,10 @@ class AlertState:
 
     def __repr__(self) -> str:
         """Return a string representation of the AlertState."""
-        return (f"AlertState(alert_id={self.alert_id}, type={self.type}, "
-                f"current_state={self.current_state})")
+        return (
+            f"AlertState(alert_id={self.alert_id}, type={self.type}, "
+            f"current_state={self.current_state})"
+        )
 
 
 class EntityState:
@@ -198,11 +197,7 @@ class EntityState:
         # For reporting
         self.alert_type_counts: Dict[str, int] = defaultdict(int)
 
-    def add_alert(
-            self,
-            alert_id: str,
-            alert_type: str,
-            timestamp: datetime) -> None:
+    def add_alert(self, alert_id: str, alert_type: str, timestamp: datetime) -> None:
         """
         Add an active alert to the entity.
 
@@ -255,9 +250,8 @@ class EntityState:
         return len(self.current_alerts) > 0
 
     def calculate_unhealthy_time_in_range(
-            self,
-            start_time: Optional[datetime] = None,
-            end_time: Optional[datetime] = None) -> float:
+        self, start_time: Optional[datetime] = None, end_time: Optional[datetime] = None
+    ) -> float:
         """
         Calculate unhealthy time within a specific time range.
 
@@ -273,12 +267,14 @@ class EntityState:
         for period_start, period_end in self.unhealthy_periods:
             # Skip periods outside the range
             if (start_time and period_end < start_time) or (
-                    end_time and period_start > end_time):
+                end_time and period_start > end_time
+            ):
                 continue
 
             # Adjust period to the specified range
-            overlap_start = max(period_start,
-                                start_time) if start_time else period_start
+            overlap_start = (
+                max(period_start, start_time) if start_time else period_start
+            )
             overlap_end = min(period_end, end_time) if end_time else period_end
 
             # Add the overlap duration
@@ -290,7 +286,10 @@ class EntityState:
         """Return a string representation of the EntityState."""
         return (
             f"EntityState(total_unhealthy_time={
-                self.total_unhealthy_time}, " f"current_alerts={
+                self.total_unhealthy_time}, "
+            f"current_alerts={
                 len(
-                    self.current_alerts)}, " f"is_unhealthy={
-                    self.is_unhealthy()})")
+                    self.current_alerts)}, "
+            f"is_unhealthy={
+                    self.is_unhealthy()})"
+        )

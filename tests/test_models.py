@@ -1,9 +1,11 @@
 """Tests for the data models."""
 
-import pytest
-from datetime import datetime
 import json
 from collections import defaultdict
+from datetime import datetime
+
+import pytest
+
 from src.models import AlertEvent, AlertState, EntityState
 
 
@@ -18,7 +20,7 @@ class TestAlertEvent:
             timestamp=datetime(2023, 1, 1, 12, 0, 0),
             state="NEW",
             alert_type="Disk Usage Alert",
-            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         )
 
         assert event.event_id == "event-123"
@@ -26,14 +28,11 @@ class TestAlertEvent:
         assert event.timestamp == datetime(2023, 1, 1, 12, 0, 0)
         assert event.state == "NEW"
         assert event.type == "Disk Usage Alert"
-        assert event.tags == {
-            "host": "host-789",
-            "dc": "dc-123",
-            "volume": "vol-456"}
+        assert event.tags == {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
 
     def test_from_json_string(self):
         """Test creating AlertEvent from JSON string."""
-        json_str = '''
+        json_str = """
         {
             "event_id": "event-123",
             "alert_id": "alert-456",
@@ -42,7 +41,7 @@ class TestAlertEvent:
             "type": "Disk Usage Alert",
             "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
         }
-        '''
+        """
 
         event = AlertEvent.from_json(json_str)
 
@@ -53,10 +52,7 @@ class TestAlertEvent:
         assert event.timestamp.day == 1
         assert event.state == "NEW"
         assert event.type == "Disk Usage Alert"
-        assert event.tags == {
-            "host": "host-789",
-            "dc": "dc-123",
-            "volume": "vol-456"}
+        assert event.tags == {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
 
     def test_from_json_dict(self):
         """Test creating AlertEvent from dictionary."""
@@ -66,7 +62,7 @@ class TestAlertEvent:
             "timestamp": "2023-01-01T12:00:00Z",
             "state": "NEW",
             "type": "Disk Usage Alert",
-            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         }
 
         event = AlertEvent.from_json(json_dict)
@@ -76,10 +72,7 @@ class TestAlertEvent:
         assert event.timestamp.year == 2023
         assert event.state == "NEW"
         assert event.type == "Disk Usage Alert"
-        assert event.tags == {
-            "host": "host-789",
-            "dc": "dc-123",
-            "volume": "vol-456"}
+        assert event.tags == {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
 
     def test_missing_field(self):
         """Test handling of missing fields."""
@@ -89,7 +82,7 @@ class TestAlertEvent:
             "timestamp": "2023-01-01T12:00:00Z",
             "state": "NEW",
             # Missing "type" field
-            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         }
 
         with pytest.raises(ValueError) as excinfo:
@@ -105,7 +98,7 @@ class TestAlertEvent:
             "timestamp": "2023-01-01T12:00:00Z",
             "state": "INVALID",  # Invalid state
             "type": "Disk Usage Alert",
-            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         }
 
         with pytest.raises(ValueError) as excinfo:
@@ -121,7 +114,7 @@ class TestAlertEvent:
             "timestamp": "not-a-timestamp",  # Invalid timestamp
             "state": "NEW",
             "type": "Disk Usage Alert",
-            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         }
 
         with pytest.raises(ValueError) as excinfo:
@@ -131,7 +124,7 @@ class TestAlertEvent:
 
     def test_malformed_json(self):
         """Test handling of malformed JSON."""
-        json_str = '''
+        json_str = """
         {
             "event_id": "event-123",
             "alert_id": "alert-456",
@@ -140,7 +133,7 @@ class TestAlertEvent:
             "type": "Disk Usage Alert",
             "tags": {"host": "host-789", "dc": "dc-123", "volume": "vol-456"
         }
-        '''  # Missing closing brace
+        """  # Missing closing brace
 
         with pytest.raises(json.JSONDecodeError):
             AlertEvent.from_json(json_str)
@@ -154,15 +147,12 @@ class TestAlertState:
         state = AlertState(
             alert_id="alert-456",
             alert_type="Disk Usage Alert",
-            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         )
 
         assert state.alert_id == "alert-456"
         assert state.type == "Disk Usage Alert"
-        assert state.tags == {
-            "host": "host-789",
-            "dc": "dc-123",
-            "volume": "vol-456"}
+        assert state.tags == {"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
         assert state.current_state is None
         assert state.start_time is None
         assert state.end_time is None
@@ -173,7 +163,7 @@ class TestAlertState:
         state = AlertState(
             alert_id="alert-456",
             alert_type="Disk Usage Alert",
-            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         )
 
         timestamp = datetime(2023, 1, 1, 12, 0, 0)
@@ -190,7 +180,7 @@ class TestAlertState:
         state = AlertState(
             alert_id="alert-456",
             alert_type="Disk Usage Alert",
-            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         )
 
         timestamp1 = datetime(2023, 1, 1, 12, 0, 0)
@@ -202,8 +192,7 @@ class TestAlertState:
         assert state.current_state == "ACK"
         assert state.start_time == timestamp1  # Start time should be from NEW
         assert state.end_time is None
-        assert state.state_history == [
-            (timestamp1, "NEW"), (timestamp2, "ACK")]
+        assert state.state_history == [(timestamp1, "NEW"), (timestamp2, "ACK")]
         assert state.is_active() is True
 
     def test_update_state_rsv(self):
@@ -211,7 +200,7 @@ class TestAlertState:
         state = AlertState(
             alert_id="alert-456",
             alert_type="Disk Usage Alert",
-            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         )
 
         timestamp1 = datetime(2023, 1, 1, 12, 0, 0)
@@ -229,7 +218,7 @@ class TestAlertState:
         assert state.state_history == [
             (timestamp1, "NEW"),
             (timestamp2, "ACK"),
-            (timestamp3, "RSV")
+            (timestamp3, "RSV"),
         ]
         assert state.is_active() is False
 
@@ -238,7 +227,7 @@ class TestAlertState:
         state = AlertState(
             alert_id="alert-456",
             alert_type="Disk Usage Alert",
-            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"}
+            tags={"host": "host-789", "dc": "dc-123", "volume": "vol-456"},
         )
 
         # No duration yet
@@ -355,39 +344,54 @@ class TestEntityState:
         """Test calculating unhealthy time with no time bounds."""
         state = EntityState()
         state.unhealthy_periods = [
-            (datetime(2023, 1, 1, 12, 0, 0), datetime(
-                2023, 1, 1, 12, 10, 0)),  # 10 minutes
-            (datetime(2023, 1, 1, 12, 20, 0), datetime(
-                2023, 1, 1, 12, 30, 0))   # 10 minutes
+            (
+                datetime(2023, 1, 1, 12, 0, 0),
+                datetime(2023, 1, 1, 12, 10, 0),
+            ),  # 10 minutes
+            (
+                datetime(2023, 1, 1, 12, 20, 0),
+                datetime(2023, 1, 1, 12, 30, 0),
+            ),  # 10 minutes
         ]
 
-        assert state.calculate_unhealthy_time_in_range() == 1200  # 20 minutes = 1200 seconds
+        assert (
+            state.calculate_unhealthy_time_in_range() == 1200
+        )  # 20 minutes = 1200 seconds
 
     def test_calculate_unhealthy_time_in_range_with_bounds(self):
         """Test calculating unhealthy time within specific time bounds."""
         state = EntityState()
         state.unhealthy_periods = [
-            (datetime(2023, 1, 1, 12, 0, 0), datetime(
-                2023, 1, 1, 12, 10, 0)),  # 10 minutes
-            (datetime(2023, 1, 1, 12, 20, 0), datetime(
-                2023, 1, 1, 12, 30, 0))   # 10 minutes
+            (
+                datetime(2023, 1, 1, 12, 0, 0),
+                datetime(2023, 1, 1, 12, 10, 0),
+            ),  # 10 minutes
+            (
+                datetime(2023, 1, 1, 12, 20, 0),
+                datetime(2023, 1, 1, 12, 30, 0),
+            ),  # 10 minutes
         ]
 
         # Only include the second period
         start_time = datetime(2023, 1, 1, 12, 15, 0)
         end_time = datetime(2023, 1, 1, 12, 35, 0)
 
-        assert state.calculate_unhealthy_time_in_range(
-            start_time, end_time) == 600  # 10 minutes = 600 seconds
+        assert (
+            state.calculate_unhealthy_time_in_range(start_time, end_time) == 600
+        )  # 10 minutes = 600 seconds
 
     def test_calculate_unhealthy_time_in_range_partial_overlap(self):
         """Test calculating unhealthy time with partial overlap of time bounds."""
         state = EntityState()
         state.unhealthy_periods = [
-            (datetime(2023, 1, 1, 12, 0, 0), datetime(
-                2023, 1, 1, 12, 10, 0)),  # 10 minutes
-            (datetime(2023, 1, 1, 12, 20, 0), datetime(
-                2023, 1, 1, 12, 30, 0))   # 10 minutes
+            (
+                datetime(2023, 1, 1, 12, 0, 0),
+                datetime(2023, 1, 1, 12, 10, 0),
+            ),  # 10 minutes
+            (
+                datetime(2023, 1, 1, 12, 20, 0),
+                datetime(2023, 1, 1, 12, 30, 0),
+            ),  # 10 minutes
         ]
 
         # Partially overlap both periods
@@ -395,5 +399,6 @@ class TestEntityState:
         end_time = datetime(2023, 1, 1, 12, 25, 0)
 
         # First period: 5 minutes, Second period: 5 minutes
-        assert state.calculate_unhealthy_time_in_range(
-            start_time, end_time) == 600  # 10 minutes = 600 seconds
+        assert (
+            state.calculate_unhealthy_time_in_range(start_time, end_time) == 600
+        )  # 10 minutes = 600 seconds

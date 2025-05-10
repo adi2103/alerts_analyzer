@@ -1,9 +1,10 @@
 """Dimension indexing for the Alert Analysis System."""
 
-from typing import Dict, Set, Callable, Any, Optional
+from typing import Any, Callable, Dict, Optional
+
 from sortedcontainers import SortedDict
 
-from src.models import EntityState, AlertState
+from src.models import AlertState, EntityState
 
 
 class Index:
@@ -21,10 +22,9 @@ class Index:
     Space Complexity: O(E) where E is the number of entities in this dimension
     """
 
-    def __init__(self,
-                 name: str,
-                 extractor_func: Callable[[AlertState],
-                                          Optional[str]]):
+    def __init__(
+        self, name: str, extractor_func: Callable[[AlertState], Optional[str]]
+    ):
         """
         Initialize an Index.
 
@@ -68,10 +68,8 @@ class Index:
         return self.entity_states[entity_value]
 
     def update_entity_position(
-            self,
-            entity_value: str,
-            old_time: float,
-            new_time: float) -> None:
+        self, entity_value: str, old_time: float, new_time: float
+    ) -> None:
         """
         Update the position of an entity in the ordered index.
 
@@ -122,7 +120,7 @@ class Index:
                 results[entity_value] = {
                     f"{self.name}_id": entity_value,
                     "total_unhealthy_time": -neg_time,  # Convert back to positive
-                    "alert_types": dict(entity_state.alert_type_counts)
+                    "alert_types": dict(entity_state.alert_type_counts),
                 }
 
                 count += 1

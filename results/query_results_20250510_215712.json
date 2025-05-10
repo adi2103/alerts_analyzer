@@ -1,0 +1,12 @@
+{
+  "query": {
+    "timestamp": "2025-05-10T21:57:12.961495",
+    "parameters": {
+      "dimension": "type",
+      "top_k": 50
+    }
+  },
+  "results": {
+    "error": "Dimension type not registered"
+  }
+}
