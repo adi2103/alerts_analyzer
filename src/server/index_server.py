@@ -7,11 +7,12 @@ allowing for queries from multiple clients.
 
 import argparse
 import json
-from flask import Flask, request, jsonify
+import logging
+import os
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from src.processors.event_processor import EventProcessor
 from src.query.query_engine import QueryEngine
-import logging
 
 class IndexServer:
     """
@@ -25,8 +26,10 @@ class IndexServer:
         self.processor = EventProcessor()
         self.query_engine = QueryEngine()
         self.app = Flask(__name__)
-        # Enable CORS for all routes
-        CORS(self.app)
+        
+        # Enable CORS for all routes with all origins
+        CORS(self.app, resources={r"/*": {"origins": "*"}})
+        
         self.logger = logging.getLogger("index_server")
         
         # Register routes
@@ -34,23 +37,54 @@ class IndexServer:
         
     def register_routes(self):
         """Register the API routes."""
-        @self.app.route("/query", methods=["POST"])
+        @self.app.route("/", methods=["GET"])
+        def index():
+            """Root endpoint."""
+            return jsonify({
+                "status": "ok",
+                "message": "Alert Analysis Index Server is running",
+                "endpoints": ["/health", "/query"]
+            })
+        
+        @self.app.route("/query", methods=["POST", "GET"])
         def query():
             """Handle query requests."""
             try:
-                data = request.json
-                if not data:
-                    # If no JSON data, try to get from form or query parameters
-                    dimension = request.values.get("dimension", "host")
-                    k = int(request.values.get("top", 5))
-                else:
+                # Log the request details for debugging
+                self.logger.info(f"Request method: {request.method}")
+                self.logger.info(f"Request headers: {dict(request.headers)}")
+                self.logger.info(f"Request args: {dict(request.args)}")
+                
+                if request.method == "GET":
+                    # Handle GET request
+                    dimension = request.args.get("dimension", "host")
+                    try:
+                        k = int(request.args.get("top", 5))
+                    except (ValueError, TypeError):
+                        k = 5
+                elif request.is_json:
+                    # Handle JSON POST request
+                    data = request.json
                     dimension = data.get("dimension", "host")
                     k = data.get("top", 5)
+                else:
+                    # Handle form POST request
+                    dimension = request.form.get("dimension", "host")
+                    try:
+                        k = int(request.form.get("top", 5))
+                    except (ValueError, TypeError):
+                        k = 5
                 
                 self.logger.info(f"Processing query: dimension={dimension}, top={k}")
                 results = self.query_engine.get_top_k(dimension, k)
                 
-                return jsonify(results)
+                # Return results with explicit CORS headers
+                response = jsonify(results)
+                response.headers.add('Access-Control-Allow-Origin', '*')
+                response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+                response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+                return response
+                
             except Exception as e:
                 self.logger.error(f"Error processing query: {str(e)}")
                 return jsonify({"error": str(e)}), 500
@@ -60,21 +94,14 @@ class IndexServer:
             """Health check endpoint."""
             return jsonify({"status": "healthy"})
             
-        # Add a GET endpoint for queries as well
-        @self.app.route("/query", methods=["GET"])
-        def query_get():
-            """Handle GET query requests."""
-            try:
-                dimension = request.args.get("dimension", "host")
-                k = int(request.args.get("top", 5))
-                
-                self.logger.info(f"Processing GET query: dimension={dimension}, top={k}")
-                results = self.query_engine.get_top_k(dimension, k)
-                
-                return jsonify(results)
-            except Exception as e:
-                self.logger.error(f"Error processing GET query: {str(e)}")
-                return jsonify({"error": str(e)}), 500
+        @self.app.route("/query", methods=["OPTIONS"])
+        def options():
+            """Handle OPTIONS requests for CORS preflight."""
+            response = Response()
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+            response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+            return response
         
     def process_file(self, file_path):
         """
@@ -91,16 +118,20 @@ class IndexServer:
         self.logger.info(f"Processed {events_processed} events")
         return events_processed
         
-    def start(self, host="localhost", port=5000):
+    def start(self, host="localhost", port=5000, debug=False):
         """
         Start the server.
         
         Args:
             host: Host to bind to
             port: Port to bind to
+            debug: Whether to run in debug mode
         """
         self.logger.info(f"Starting server on {host}:{port}")
-        self.app.run(host=host, port=port)
+        # Set environment variable to enable development mode
+        if debug:
+            os.environ['FLASK_ENV'] = 'development'
+        self.app.run(host=host, port=port, debug=debug)
 
 def main():
     """Main entry point for the index server."""
@@ -116,6 +147,7 @@ def main():
     parser.add_argument("file_path", help="Path to the alert event file to process")
     parser.add_argument("--host", default="localhost", help="Host to bind to")
     parser.add_argument("--port", type=int, default=5000, help="Port to bind to")
+    parser.add_argument("--debug", action="store_true", help="Run in debug mode")
     
     args = parser.parse_args()
     
@@ -123,7 +155,7 @@ def main():
         # Create and start the server
         server = IndexServer()
         server.process_file(args.file_path)
-        server.start(args.host, args.port)
+        server.start(args.host, args.port, args.debug)
     except Exception as e:
         logger.error(f"Error starting server: {str(e)}")
         return 1
