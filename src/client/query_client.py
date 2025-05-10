@@ -36,9 +36,10 @@ class QueryClient:
             str: Formatted results
         """
         try:
-            response = requests.post(
+            # Use GET request instead of POST for simplicity
+            response = requests.get(
                 f"{self.server_url}/query",
-                json={"dimension": dimension, "top": top}
+                params={"dimension": dimension, "top": top}
             )
             
             if response.status_code != 200:

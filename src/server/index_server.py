@@ -8,6 +8,7 @@ allowing for queries from multiple clients.
 import argparse
 import json
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from src.processors.event_processor import EventProcessor
 from src.query.query_engine import QueryEngine
 import logging
@@ -24,6 +25,8 @@ class IndexServer:
         self.processor = EventProcessor()
         self.query_engine = QueryEngine()
         self.app = Flask(__name__)
+        # Enable CORS for all routes
+        CORS(self.app)
         self.logger = logging.getLogger("index_server")
         
         # Register routes
@@ -36,8 +39,13 @@ class IndexServer:
             """Handle query requests."""
             try:
                 data = request.json
-                dimension = data.get("dimension", "host")
-                k = data.get("top", 5)
+                if not data:
+                    # If no JSON data, try to get from form or query parameters
+                    dimension = request.values.get("dimension", "host")
+                    k = int(request.values.get("top", 5))
+                else:
+                    dimension = data.get("dimension", "host")
+                    k = data.get("top", 5)
                 
                 self.logger.info(f"Processing query: dimension={dimension}, top={k}")
                 results = self.query_engine.get_top_k(dimension, k)
@@ -51,6 +59,22 @@ class IndexServer:
         def health():
             """Health check endpoint."""
             return jsonify({"status": "healthy"})
+            
+        # Add a GET endpoint for queries as well
+        @self.app.route("/query", methods=["GET"])
+        def query_get():
+            """Handle GET query requests."""
+            try:
+                dimension = request.args.get("dimension", "host")
+                k = int(request.args.get("top", 5))
+                
+                self.logger.info(f"Processing GET query: dimension={dimension}, top={k}")
+                results = self.query_engine.get_top_k(dimension, k)
+                
+                return jsonify(results)
+            except Exception as e:
+                self.logger.error(f"Error processing GET query: {str(e)}")
+                return jsonify({"error": str(e)}), 500
         
     def process_file(self, file_path):
         """
