@@ -1,204 +1,190 @@
 """End-to-end tests for the Alert Analysis System."""
 
-import pytest
 import os
 import tempfile
-import gzip
+import unittest
 import json
-from datetime import datetime
+from unittest.mock import patch
+from io import StringIO
+import sys
 
+from src.processors.event_processor import EventProcessor
+from src.query.query_engine import QueryEngine
 from src.alert_analyzer import AlertAnalyzer
-from src.models import AlertEvent
+from src.__main__ import main
 
 
-class TestEndToEnd:
+class TestEndToEnd(unittest.TestCase):
     """End-to-end tests for the Alert Analysis System."""
 
-    @pytest.fixture
-    def sample_data_file(self):
-        """Create a sample data file for testing."""
-        # Create sample events
-        events = [
-            # Host 1: 10 minutes of unhealthy time (Disk Usage Alert)
-            {
-                "event_id": "event-1",
-                "alert_id": "alert-1",
-                "timestamp": "2023-01-01T12:00:00Z",
-                "state": "NEW",
-                "type": "Disk Usage Alert",
-                "tags": {"host": "host-1", "dc": "dc-1", "volume": "vol-1"}
-            },
-            {
-                "event_id": "event-2",
-                "alert_id": "alert-1",
-                "timestamp": "2023-01-01T12:10:00Z",
-                "state": "RSV",
-                "type": "Disk Usage Alert",
-                "tags": {"host": "host-1", "dc": "dc-1", "volume": "vol-1"}
-            },
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create a temporary file with test data
+        self.temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False)
+        
+        # Write some test alert events
+        self.temp_file.write('{"event_id": "e1", "alert_id": "a1", "timestamp": "2023-01-01T10:00:00", "state": "NEW", "type": "Test Alert", "tags": {"host": "test-host-1", "dc": "dc-1"}}\n')
+        self.temp_file.write('{"event_id": "e2", "alert_id": "a2", "timestamp": "2023-01-01T10:30:00", "state": "NEW", "type": "Test Alert", "tags": {"host": "test-host-2", "dc": "dc-1"}}\n')
+        self.temp_file.write('{"event_id": "e3", "alert_id": "a1", "timestamp": "2023-01-01T11:00:00", "state": "RSV", "type": "Test Alert", "tags": {"host": "test-host-1", "dc": "dc-1"}}\n')
+        self.temp_file.write('{"event_id": "e4", "alert_id": "a2", "timestamp": "2023-01-01T12:00:00", "state": "RSV", "type": "Test Alert", "tags": {"host": "test-host-2", "dc": "dc-1"}}\n')
+        
+        self.temp_file.close()
 
-            # Host 2: 15 minutes of unhealthy time (System Service Failed)
-            {
-                "event_id": "event-3",
-                "alert_id": "alert-2",
-                "timestamp": "2023-01-01T12:00:00Z",
-                "state": "NEW",
-                "type": "System Service Failed",
-                "tags": {"host": "host-2", "dc": "dc-1", "service": "svc-1"}
-            },
-            {
-                "event_id": "event-4",
-                "alert_id": "alert-2",
-                "timestamp": "2023-01-01T12:15:00Z",
-                "state": "RSV",
-                "type": "System Service Failed",
-                "tags": {"host": "host-2", "dc": "dc-1", "service": "svc-1"}
-            },
+    def tearDown(self):
+        """Tear down test fixtures."""
+        # Remove the temporary file
+        if os.path.exists(self.temp_file.name):
+            os.unlink(self.temp_file.name)
 
-            # Host 3: 20 minutes of unhealthy time (Time Drift Alert)
-            {
-                "event_id": "event-5",
-                "alert_id": "alert-3",
-                "timestamp": "2023-01-01T12:00:00Z",
-                "state": "NEW",
-                "type": "Time Drift Alert",
-                "tags": {"host": "host-3", "dc": "dc-2", "drift": "1000"}
-            },
-            {
-                "event_id": "event-6",
-                "alert_id": "alert-3",
-                "timestamp": "2023-01-01T12:20:00Z",
-                "state": "RSV",
-                "type": "Time Drift Alert",
-                "tags": {"host": "host-3", "dc": "dc-2", "drift": "1000"}
-            },
+    def test_event_processor_and_query_engine(self):
+        """Test the EventProcessor and QueryEngine workflow."""
+        # Create an EventProcessor and process the test file
+        processor = EventProcessor()
+        events_processed = processor.process_file(self.temp_file.name)
+        
+        # Verify that all events were processed
+        self.assertEqual(events_processed, 4)
+        
+        # Create a QueryEngine and query the top hosts
+        query_engine = QueryEngine()
+        results = query_engine.get_top_k("host", 2)
+        
+        # Verify the results
+        self.assertEqual(len(results), 2)
+        
+        # Check that the hosts are sorted by unhealthy time
+        # test-host-2 should be first (90 minutes = 5400 seconds)
+        # test-host-1 should be second (60 minutes = 3600 seconds)
+        self.assertEqual(results[0]["host_id"], "test-host-2")
+        self.assertEqual(results[0]["total_unhealthy_time"], 5400)
+        self.assertEqual(results[1]["host_id"], "test-host-1")
+        self.assertEqual(results[1]["total_unhealthy_time"], 3600)
+        
+        # Query by data center
+        dc_results = query_engine.get_top_k("dc", 1)
+        
+        # Verify the results
+        self.assertEqual(len(dc_results), 1)
+        self.assertEqual(dc_results[0]["dc_id"], "dc-1")
+        self.assertEqual(dc_results[0]["total_unhealthy_time"], 9000)  # 150 minutes = 9000 seconds
 
-            # Host 4: 5 minutes of unhealthy time (Disk Usage Alert)
-            {
-                "event_id": "event-7",
-                "alert_id": "alert-4",
-                "timestamp": "2023-01-01T12:00:00Z",
-                "state": "NEW",
-                "type": "Disk Usage Alert",
-                "tags": {"host": "host-4", "dc": "dc-2", "volume": "vol-2"}
-            },
-            {
-                "event_id": "event-8",
-                "alert_id": "alert-4",
-                "timestamp": "2023-01-01T12:05:00Z",
-                "state": "RSV",
-                "type": "Disk Usage Alert",
-                "tags": {"host": "host-4", "dc": "dc-2", "volume": "vol-2"}
-            },
-
-            # Host 5: 25 minutes of unhealthy time (System Service Failed)
-            {
-                "event_id": "event-9",
-                "alert_id": "alert-5",
-                "timestamp": "2023-01-01T12:00:00Z",
-                "state": "NEW",
-                "type": "System Service Failed",
-                "tags": {"host": "host-5", "dc": "dc-3", "service": "svc-2"}
-            },
-            {
-                "event_id": "event-10",
-                "alert_id": "alert-5",
-                "timestamp": "2023-01-01T12:25:00Z",
-                "state": "RSV",
-                "type": "System Service Failed",
-                "tags": {"host": "host-5", "dc": "dc-3", "service": "svc-2"}
-            }
-        ]
-
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".gz", delete=False) as f:
-            with gzip.open(f.name, 'wt') as gz:
-                for event in events:
-                    gz.write(json.dumps(event) + "\n")
-
-            yield f.name
-
-        # Clean up after the test
-        if os.path.exists(f.name):
-            os.unlink(f.name)
-
-    def test_analyze_file(self, sample_data_file):
-        """Test analyzing a file end-to-end."""
-        # Create analyzer
+    def test_backward_compatibility(self):
+        """Test backward compatibility with AlertAnalyzer."""
+        # Create an AlertAnalyzer
         analyzer = AlertAnalyzer()
+        
+        # Analyze the test file
+        results = analyzer.analyze_file(self.temp_file.name, "host", 2)
+        
+        # Verify the results
+        self.assertEqual(len(results), 2)
+        
+        # Check that the hosts are sorted by unhealthy time
+        self.assertEqual(results[0]["host_id"], "test-host-2")
+        self.assertEqual(results[0]["total_unhealthy_time"], 5400)
+        self.assertEqual(results[1]["host_id"], "test-host-1")
+        self.assertEqual(results[1]["total_unhealthy_time"], 3600)
+        
+        # Test with different dimension
+        dc_results = analyzer.get_results("dc", 1)
+        
+        # Verify the results
+        self.assertEqual(len(dc_results), 1)
+        self.assertEqual(dc_results[0]["dc_id"], "dc-1")
+        self.assertEqual(dc_results[0]["total_unhealthy_time"], 9000)
 
-        # Analyze file
-        results = analyzer.analyze_file(sample_data_file)
+    def test_command_line_interface(self):
+        """Test the command-line interface."""
+        # Test the process command
+        with patch('sys.argv', ['src', 'process', self.temp_file.name]):
+            # Capture stdout
+            captured_output = StringIO()
+            sys.stdout = captured_output
+            
+            # Run the command
+            main()
+            
+            # Reset stdout
+            sys.stdout = sys.__stdout__
+            
+            # Check the output
+            self.assertIn('Processed 4 events', captured_output.getvalue())
+        
+        # Test the query command
+        with patch('sys.argv', ['src', 'query', 'host', '--top', '2']):
+            # Capture stdout
+            captured_output = StringIO()
+            sys.stdout = captured_output
+            
+            # Run the command
+            main()
+            
+            # Reset stdout
+            sys.stdout = sys.__stdout__
+            
+            # Check the output
+            output = captured_output.getvalue()
+            self.assertIn('test-host-2', output)
+            self.assertIn('5400 seconds', output)
+            self.assertIn('test-host-1', output)
+            self.assertIn('3600 seconds', output)
+        
+        # Test the legacy mode
+        with patch('sys.argv', ['src', self.temp_file.name, '--dimension', 'dc', '--top', '1']):
+            # Capture stdout
+            captured_output = StringIO()
+            sys.stdout = captured_output
+            
+            # Run the command
+            main()
+            
+            # Reset stdout
+            sys.stdout = sys.__stdout__
+            
+            # Check the output
+            output = captured_output.getvalue()
+            self.assertIn('dc-1', output)
+            self.assertIn('9000 seconds', output)
 
-        # Check results
-        assert len(results) == 5
+    def test_with_sample_file(self):
+        """Test with a small sample file to keep tests fast."""
+        # Create a smaller sample file
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as sample_file:
+            # Write a few test alert events
+            sample_file.write('{"event_id": "e1", "alert_id": "a1", "timestamp": "2023-01-01T10:00:00", "state": "NEW", "type": "Sample Alert", "tags": {"host": "sample-host-1", "service": "service-1"}}\n')
+            sample_file.write('{"event_id": "e2", "alert_id": "a1", "timestamp": "2023-01-01T10:30:00", "state": "RSV", "type": "Sample Alert", "tags": {"host": "sample-host-1", "service": "service-1"}}\n')
+            sample_file_path = sample_file.name
+        
+        try:
+            # Create an EventProcessor and process the sample file
+            processor = EventProcessor()
+            events_processed = processor.process_file(sample_file_path)
+            
+            # Verify that all events were processed
+            self.assertEqual(events_processed, 2)
+            
+            # Create a QueryEngine and query the top hosts
+            query_engine = QueryEngine()
+            host_results = query_engine.get_top_k("host", 1)
+            
+            # Verify the results
+            self.assertEqual(len(host_results), 1)
+            self.assertEqual(host_results[0]["host_id"], "sample-host-1")
+            self.assertEqual(host_results[0]["total_unhealthy_time"], 1800)  # 30 minutes = 1800 seconds
+            
+            # Query by service
+            service_results = query_engine.get_top_k("service", 1)
+            
+            # Verify the results
+            self.assertEqual(len(service_results), 1)
+            self.assertEqual(service_results[0]["service_id"], "service-1")
+            self.assertEqual(service_results[0]["total_unhealthy_time"], 1800)
+            
+        finally:
+            # Clean up the sample file
+            if os.path.exists(sample_file_path):
+                os.unlink(sample_file_path)
 
-        # Check order (descending by unhealthy time)
-        assert results[0]["host_id"] == "host-5"  # 25 minutes
-        assert results[1]["host_id"] == "host-3"  # 20 minutes
-        assert results[2]["host_id"] == "host-2"  # 15 minutes
-        assert results[3]["host_id"] == "host-1"  # 10 minutes
-        assert results[4]["host_id"] == "host-4"  # 5 minutes
 
-        # Check unhealthy times
-        # 25 minutes = 1500 seconds
-        assert results[0]["total_unhealthy_time"] == 1500
-        # 20 minutes = 1200 seconds
-        assert results[1]["total_unhealthy_time"] == 1200
-        # 15 minutes = 900 seconds
-        assert results[2]["total_unhealthy_time"] == 900
-        # 10 minutes = 600 seconds
-        assert results[3]["total_unhealthy_time"] == 600
-        # 5 minutes = 300 seconds
-        assert results[4]["total_unhealthy_time"] == 300
-
-    def test_analyze_file_with_alert_type_filter(self, sample_data_file):
-        """Test analyzing a file with alert type filter."""
-        # Create analyzer
-        analyzer = AlertAnalyzer()
-
-        # Analyze file with filter
-        results = analyzer.analyze_file(
-            sample_data_file, alert_type="Disk Usage Alert")
-
-        # Alert type filtering is not supported in this version
-        # Should return top 5 hosts regardless of alert type
-        assert len(results) == 5
-
-        # Check order (descending by unhealthy time)
-        assert results[0]["host_id"] == "host-5"  # 25 minutes
-        assert results[1]["host_id"] == "host-3"  # 20 minutes
-        assert results[2]["host_id"] == "host-2"  # 15 minutes
-
-        # Check unhealthy times
-        # 25 minutes = 1500 seconds
-        assert results[0]["total_unhealthy_time"] == 1500
-        # 20 minutes = 1200 seconds
-        assert results[1]["total_unhealthy_time"] == 1200
-        # 15 minutes = 900 seconds
-        assert results[2]["total_unhealthy_time"] == 900
-
-    def test_analyze_file_with_different_dimension(self, sample_data_file):
-        """Test analyzing a file with a different dimension."""
-        # Create analyzer
-        analyzer = AlertAnalyzer()
-
-        # Analyze file with different dimension
-        results = analyzer.analyze_file(sample_data_file, dimension_name="dc")
-
-        # Check results
-        assert len(results) == 3
-
-        # Check data centers
-        dc_ids = [result["dc_id"] for result in results]
-        assert "dc-1" in dc_ids
-        assert "dc-2" in dc_ids
-        assert "dc-3" in dc_ids
-
-        # Check unhealthy times
-        # dc-1: host-1 (10 min) + host-2 (15 min) = 25 min
-        # dc-2: host-3 (20 min) + host-4 (5 min) = 25 min
-        # dc-3: host-5 (25 min) = 25 min
-        for result in results:
-            # 25 minutes = 1500 seconds
-            assert result["total_unhealthy_time"] == 1500
+if __name__ == '__main__':
+    unittest.main()

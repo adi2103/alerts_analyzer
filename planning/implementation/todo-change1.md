@@ -88,11 +88,11 @@ This checklist tracks progress on implementing the separation of event processin
 - [x] Verify same functionality and output format
 
 ## Prompt 8: Create End-to-End Tests
-- [ ] Create test for EventProcessor and QueryEngine workflow
-- [ ] Create test for backward compatibility with AlertAnalyzer
-- [ ] Create test for command-line interface
-- [ ] Create or use sample test file
-- [ ] Verify results match expected output
+- [x] Create test for EventProcessor and QueryEngine workflow
+- [x] Create test for backward compatibility with AlertAnalyzer
+- [x] Create test for command-line interface
+- [x] Create or use sample test file
+- [x] Verify results match expected output
 
 ## Prompt 9: Documentation and Final Polishing
 - [ ] Update README.md with new architecture
