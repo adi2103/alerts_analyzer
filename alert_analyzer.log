@@ -164,3 +164,10 @@
 2025-05-09 18:49:13,363 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28018.13 events/sec)
 2025-05-09 18:49:34,423 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28008.13 events/sec)
 2025-05-09 18:49:34,423 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-10 14:56:51,917 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27099.55 events/sec)
+2025-05-10 14:56:51,917 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-10 14:57:23,297 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (26258.21 events/sec)
+2025-05-10 14:57:23,297 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-10 14:59:50,563 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27786.10 events/sec)
+2025-05-10 14:59:50,563 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-10 15:01:54,172 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27868.85 events/sec)

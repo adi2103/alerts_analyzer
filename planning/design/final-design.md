@@ -57,7 +57,7 @@ class AlertEvent:
         self.state = state          # NEW, ACK, or RSV
         self.type = alert_type
         self.tags = tags
-        
+
     @classmethod
     def from_json(cls, json_data):
         # Parse JSON and create AlertEvent instance
@@ -86,10 +86,10 @@ class EntityState:
         self.total_unhealthy_time = 0
         self.current_alerts = set()  # Set of active alert_ids
         self.unhealthy_start = None  # Timestamp when entity became unhealthy
-        
+
         # Time series data for temporal analysis
         self.unhealthy_periods = []  # List of (start_time, end_time) tuples
-        
+
         # For reporting
         self.alert_type_counts = defaultdict(int)
 ```
@@ -104,15 +104,15 @@ class Index:
     def __init__(self, name, extractor_func):
         self.name = name
         self.extractor_func = extractor_func
-        
+
         # Entity states for this dimension
         self.entity_states = {}  # entity_value → EntityState
-        
+
         # SortedDict for ordered access
         # Key: -unhealthy_time (negative for reverse order)
         # Value: set of entity_values with that time
         self.ordered_entities = SortedDict()
-        
+
         # Track current position of each entity in the sorted dict
         self.entity_positions = {}  # entity_value → unhealthy_time
 ```
@@ -124,16 +124,16 @@ class AlertAnalyzer:
     def __init__(self):
         # Alert states
         self.alert_states = {}  # alert_id → AlertState
-        
+
         # Registered dimensions for indexing/aggregation
         self.dimensions = {}  # dimension_name → DimensionIndex
-        
+
         # Register standard dimensions
         self.register_dimension("host", lambda event: event.tags.get("host"))
         self.register_dimension("dc", lambda event: event.tags.get("dc"))
         self.register_dimension("service", lambda event: event.tags.get("service"))
         self.register_dimension("volume", lambda event: event.tags.get("volume"))
-    
+
     def register_dimension(self, dimension_name, extractor_func):
         """Register a new dimension for indexing and aggregation"""
         self.dimensions[dimension_name] = Index(dimension_name, extractor_func)
@@ -147,7 +147,7 @@ class AlertAnalyzer:
 def process_event(self, event):
     # Update alert state
     alert_id = event.alert_id
-    
+
     # Initialize alert state if needed
     if alert_id not in self.alert_states and event.state != "RSV":
         self.alert_states[alert_id] = AlertState(
@@ -155,29 +155,29 @@ def process_event(self, event):
             alert_type=event.type,
             tags=event.tags
         )
-    
+
     # Skip RSV events for unknown alerts
     if alert_id not in self.alert_states:
         return
-    
+
     alert_state = self.alert_states[alert_id]
     old_state = alert_state.current_state
-    
+
     # Update alert state
     alert_state.current_state = event.state
     alert_state.state_history.append((event.timestamp, event.state))
-    
+
     if event.state in ["NEW", "ACK"] and old_state is None:
         # First time seeing this alert
         alert_state.start_time = event.timestamp
-    
+
     elif event.state == "RSV":
         # Alert is resolved
         alert_state.end_time = event.timestamp
-        
+
         # Update all dimension indices
         self._update_indices_for_resolved_alert(alert_state)
-        
+
         # We can discard the alert state now
         del self.alert_states[alert_id]
 ```
@@ -191,34 +191,34 @@ def _update_indices_for_resolved_alert(self, alert_state):
         unhealthy_time = (alert_state.end_time - alert_state.start_time).total_seconds()
     else:
         return  # Can't calculate without both timestamps
-    
+
     # Update each dimension index
     for dimension_name, dimension_index in self.dimensions.items():
         # Extract entity value for this dimension
         entity_value = dimension_index.extractor_func(alert_state)
         if not entity_value:
             continue
-        
+
         # Get or create entity state
         if entity_value not in dimension_index.entity_states:
             dimension_index.entity_states[entity_value] = EntityState()
             dimension_index.entity_positions[entity_value] = 0
-        
+
         entity_state = dimension_index.entity_states[entity_value]
         old_time = entity_state.total_unhealthy_time
-        
+
         # Update entity state
         entity_state.total_unhealthy_time += unhealthy_time
         entity_state.unhealthy_periods.append(
             (alert_state.start_time, alert_state.end_time)
         )
         entity_state.alert_type_counts[alert_state.type] += 1
-        
+
         # Update position in sorted dict
         self._update_entity_position(
-            dimension_index, 
-            entity_value, 
-            old_time, 
+            dimension_index,
+            entity_value,
+            old_time,
             entity_state.total_unhealthy_time
         )
 ```
@@ -236,7 +236,7 @@ def _update_entity_position(self, dimension_index, entity_value, old_time, new_t
             del dimension_index.ordered_entities[-old_time]
         else:
             dimension_index.ordered_entities[-old_time] = entity_set
-    
+
     # Add to new position
     if -new_time not in dimension_index.ordered_entities:
         dimension_index.ordered_entities[-new_time] = set()
@@ -251,37 +251,37 @@ def get_top_k(self, dimension_name, k=5, alert_type=None, start_time=None, end_t
     """Get top k entities by unhealthy time for a specific dimension"""
     if dimension_name not in self.dimensions:
         raise ValueError(f"Dimension {dimension_name} not registered")
-    
+
     dimension_index = self.dimensions[dimension_name]
-    
+
     # If time range specified, calculate unhealthy time within that range
     if start_time or end_time:
         return self._get_top_k_in_time_range(
             dimension_index, k, alert_type, start_time, end_time
         )
-    
+
     # Otherwise use the pre-calculated totals
     results = []
     count = 0
-    
+
     # Apply any filters to the ordered entities
     filtered_entities = self._apply_filters(dimension_index, alert_type)
-    
+
     # Get top k entities
     for neg_time, entity_values in filtered_entities.items():
         for entity_value in entity_values:
             entity_state = dimension_index.entity_states[entity_value]
-            
+
             results.append({
                 f"{dimension_name}_id": entity_value,
                 "total_unhealthy_time": -neg_time,  # Convert back to positive
                 "alert_types": dict(entity_state.alert_type_counts)
             })
-            
+
             count += 1
             if count >= k:
                 return results
-    
+
     return results
 ```
 
@@ -292,33 +292,33 @@ def _get_top_k_in_time_range(self, dimension_index, k, alert_type, start_time, e
     """Get top k entities by unhealthy time within a specific time range"""
     # Calculate unhealthy time for each entity within the time range
     entity_times = {}
-    
+
     for entity_value, entity_state in dimension_index.entity_states.items():
         # Skip entities that don't match filters
         if alert_type and not self._matches_alert_type(entity_value, entity_state, alert_type):
             continue
-        
+
         # Calculate unhealthy time within the specified range
         unhealthy_time = 0
-        
+
         for period_start, period_end in entity_state.unhealthy_periods:
             # Skip periods outside the range
             if (start_time and period_end < start_time) or (end_time and period_start > end_time):
                 continue
-            
+
             # Adjust period to the specified range
             overlap_start = max(period_start, start_time) if start_time else period_start
             overlap_end = min(period_end, end_time) if end_time else period_end
-            
+
             # Add the overlap duration
             unhealthy_time += (overlap_end - overlap_start).total_seconds()
-        
+
         if unhealthy_time > 0:
             entity_times[entity_value] = unhealthy_time
-    
+
     # Sort and return top k
     sorted_entities = sorted(entity_times.items(), key=lambda x: x[1], reverse=True)
-    
+
     results = []
     for entity_value, unhealthy_time in sorted_entities[:k]:
         entity_state = dimension_index.entity_states[entity_value]
@@ -327,7 +327,7 @@ def _get_top_k_in_time_range(self, dimension_index, k, alert_type, start_time, e
             "total_unhealthy_time": unhealthy_time,
             "alert_types": dict(entity_state.alert_type_counts)
         })
-    
+
     return results
 ```
 
@@ -340,11 +340,11 @@ The system will partition data by alert ID to enable parallel processing:
 ```python
 def partition_by_alert(events, num_partitions):
     partitions = [[] for _ in range(num_partitions)]
-    
+
     for event in events:
         partition_idx = hash(event.alert_id) % num_partitions
         partitions[partition_idx].append(event)
-    
+
     return partitions
 ```
 
@@ -359,12 +359,12 @@ Each worker will:
 def process_partition(events):
     # Sort events by timestamp
     sorted_events = sorted(events, key=lambda e: e.timestamp)
-    
+
     # Process events
     analyzer = AlertAnalyzer()
     for event in sorted_events:
         analyzer.process_event(event)
-    
+
     return analyzer
 ```
 
@@ -374,24 +374,24 @@ def process_partition(events):
 def merge_results(partition_analyzers):
     # Create a new analyzer for merged results
     merged_analyzer = AlertAnalyzer()
-    
+
     # Register the same dimensions
     for analyzer in partition_analyzers:
         for dimension_name, dimension in analyzer.dimensions.items():
             if dimension_name not in merged_analyzer.dimensions:
                 merged_analyzer.register_dimension(dimension_name, dimension.extractor_func)
-    
+
     # Merge dimension indices
     for analyzer in partition_analyzers:
         for dimension_name, dimension in analyzer.dimensions.items():
             merged_dimension = merged_analyzer.dimensions[dimension_name]
-            
+
             # Merge entity states
             for entity_value, entity_state in dimension.states.items():
                 if entity_value not in merged_dimension.states:
                     # Copy the entire state
                     merged_dimension.states[entity_value] = entity_state
-                    
+
                     # Update sorted dict
                     merged_analyzer._update_entity_position(
                         merged_dimension,
@@ -403,15 +403,15 @@ def merge_results(partition_analyzers):
                     # Merge state information
                     merged_entity = merged_dimension.states[entity_value]
                     old_time = merged_entity.total_unhealthy_time
-                    
+
                     # Add unhealthy time and periods
                     merged_entity.total_unhealthy_time += entity_state.total_unhealthy_time
                     merged_entity.unhealthy_periods.extend(entity_state.unhealthy_periods)
-                    
+
                     # Merge alert type counts
                     for alert_type, count in entity_state.alert_type_counts.items():
                         merged_entity.alert_type_counts[alert_type] += count
-                    
+
                     # Update sorted dict
                     merged_analyzer._update_entity_position(
                         merged_dimension,
@@ -419,7 +419,7 @@ def merge_results(partition_analyzers):
                         old_time,
                         merged_entity.total_unhealthy_time
                     )
-    
+
     return merged_analyzer
 ```
 
@@ -473,8 +473,8 @@ top_dcs = analyzer.get_top_k("dc", k=3)
 
 # Query data centers with time drift issues in a specific time range
 time_drift_dcs = analyzer.get_top_k(
-    "dc", 
-    k=2, 
+    "dc",
+    k=2,
     alert_type="Time Drift Alert",
     start_time=datetime(2023, 2, 13, 0, 0),
     end_time=datetime(2023, 2, 14, 0, 0)
@@ -580,7 +580,7 @@ def log_event_error(event, error_type, details):
 def log_performance_metrics(start_time, end_time, events_processed):
     duration = end_time - start_time
     events_per_second = events_processed / duration.total_seconds()
-    
+
     logging.info({
         "metric_type": "performance",
         "duration_seconds": duration.total_seconds(),
@@ -629,7 +629,7 @@ alerts_analyzer/
 def test_dimension_index():
     # Create a dimension index
     dimension = Index("host", lambda event: event.tags.get("host"))
-    
+
     # Create an alert state
     alert_state = AlertState(
         alert_id="alert1",
@@ -638,11 +638,11 @@ def test_dimension_index():
     )
     alert_state.start_time = datetime.fromisoformat("2023-01-01T10:00:00")
     alert_state.end_time = datetime.fromisoformat("2023-01-01T11:00:00")
-    
+
     # Update the dimension index
     analyzer = AlertAnalyzer()
     analyzer._update_indices_for_resolved_alert(alert_state)
-    
+
     # Verify the host was indexed correctly
     host_dimension = analyzer.dimensions["host"]
     assert "host1" in host_dimension.entity_states
@@ -655,16 +655,16 @@ def test_dimension_index():
 def test_end_to_end():
     analyzer = AlertAnalyzer()
     analyzer.analyze_file("src/Alert_Event_Data.gz")
-    
+
     # Test different queries
     top_hosts = analyzer.get_top_k("host", k=5)
     top_dcs = analyzer.get_top_k("dc", k=3)
     top_disk_alert_hosts = analyzer.get_top_k("host", k=5, alert_type="Disk Usage Alert")
-    
+
     # Verify structure of results
     assert len(top_hosts) == 5
     assert all("host_id" in host and "total_unhealthy_time" in host for host in top_hosts)
-    
+
     # Verify hosts are in descending order of unhealthy time
     times = [host["total_unhealthy_time"] for host in top_hosts]
     assert times == sorted(times, reverse=True)
@@ -737,3 +737,10 @@ def test_end_to_end():
    - Create dashboard for monitoring entity health
    - Add alerting for persistent unhealthy entities
    - Implement historical trend analysis
+
+## 13. Maintaining global indices and updating indices decoupled from query engine
+
+We need to add support for start and end time in the analyzer main entry point, so that we can make it reproducible and consume multiple data files as sequence. These will be first step towards time based filtering. I asked this because for a given file there could be alerts which saw a ACK / RSV state without a NEW state before. In this case, we want to assume the host was in unhealthy state based on the time range in the query. On the same note, we need to maintain and keep a global index running and think of our main data file as just one batch of events that are processed and consumed by the index. There could be several other files. A query on the other hand takes the entity states and finds the unhealthy time in log order using ordered data from the global indices, but also aggregations that might be pre processed there.
+
+Currently we have alert_analyzer.py as a single entry point for both events processing and querying. What we want is to implement separation of concerns. The various Index should be globally accessible and ever evolving. Trigger to update an index will be consumption of new events or a new index creation (we will leave it for future work to create new indices). So the index updates are a hooks to event processing for the current scope. Event processor should be an running process listening to file updates or additions in data/. It can also be manually triggered but we will keep it out of scope. Lastly querying should be a manual operation like its done right now but it will not have file / data as an argument. Arguments should just be the current index name and top k args. We will leave filtering by time, dimensions and other fields like alert_type as future work.
+
