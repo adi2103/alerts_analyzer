@@ -80,12 +80,12 @@ This checklist tracks progress on implementing the separation of event processin
 - [x] Ensure backward compatibility with existing interface
 
 ## Prompt 7: Update Results Management
-- [ ] Update save_results.py to use new components
-- [ ] Update ResultsManager class if needed
-- [ ] Add new metadata fields if required
-- [ ] Create tests for updated save_results.py
-- [ ] Create tests for updated list_results.py
-- [ ] Verify same functionality and output format
+- [x] Update save_results.py to use new components
+- [x] Update ResultsManager class if needed
+- [x] Add new metadata fields if required
+- [x] Create tests for updated save_results.py
+- [x] Create tests for updated list_results.py
+- [x] Verify same functionality and output format
 
 ## Prompt 8: Create End-to-End Tests
 - [ ] Create test for EventProcessor and QueryEngine workflow

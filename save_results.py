@@ -3,7 +3,8 @@
 import json
 import datetime
 import argparse
-from src.alert_analyzer import AlertAnalyzer
+from src.processors.event_processor import EventProcessor
+from src.query.query_engine import QueryEngine
 from src.utils.results_manager import ResultsManager
 
 
@@ -17,15 +18,22 @@ def save_results(file_path, dimension_name='host', k=5, alert_type=None):
         k: Number of entities to return
         alert_type: Optional filter for specific alert type
     """
-    # Create analyzer
-    analyzer = AlertAnalyzer()
-
-    # Analyze file
-    results = analyzer.analyze_file(
-        file_path,
-        dimension_name=dimension_name,
-        k=k,
-        alert_type=alert_type)
+    # Create event processor and process the file
+    processor = EventProcessor()
+    events_processed = processor.process_file(file_path)
+    print(f"Processed {events_processed} events from {file_path}")
+    
+    # Create query engine and get results
+    query_engine = QueryEngine()
+    results = query_engine.get_top_k(dimension_name, k)
+    
+    # If alert_type is specified, log a warning that it's not supported
+    if alert_type:
+        import logging
+        logging.getLogger("save_results").warning(
+            "Alert type filtering is not supported in this version. "
+            "Results are not filtered by alert type."
+        )
 
     # Save results using ResultsManager
     results_manager = ResultsManager()
