@@ -6,6 +6,8 @@ import json
 from typing import List, Dict, Any
 
 from src.alert_analyzer import AlertAnalyzer
+from src.processors.event_processor import EventProcessor
+from src.query.query_engine import QueryEngine
 from src.utils.logging_config import configure_logging
 
 
@@ -17,43 +19,81 @@ def parse_args() -> argparse.Namespace:
         Parsed arguments
     """
     parser = argparse.ArgumentParser(description="Alert Analysis System")
-
-    parser.add_argument(
+    
+    # Create subparsers for different commands
+    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
+    
+    # Create parser for the "process" command
+    process_parser = subparsers.add_parser("process", help="Process events from a file")
+    process_parser.add_argument(
         "file_path",
         help="Path to the gzipped JSON file containing alert events"
     )
-
-    parser.add_argument(
-        "--dimension", "-d",
-        default="host",
-        help="Dimension to analyze (default: host)"
+    
+    # Create parser for the "query" command
+    query_parser = subparsers.add_parser("query", help="Query top k unhealthiest entities")
+    query_parser.add_argument(
+        "dimension",
+        help="Dimension to analyze (e.g., host, dc, service, volume)"
     )
-
-    parser.add_argument(
+    query_parser.add_argument(
         "--top", "-k",
         type=int,
         default=5,
         help="Number of entities to return (default: 5)"
     )
-
-    parser.add_argument(
-        "--alert-type", "-t",
-        help="Filter by alert type"
-    )
-
-    parser.add_argument(
+    query_parser.add_argument(
         "--output", "-o",
         help="Output file path (default: stdout)"
     )
-
-    parser.add_argument(
+    query_parser.add_argument(
         "--format", "-f",
         choices=["json", "text"],
         default="text",
         help="Output format (default: text)"
     )
-
-    return parser.parse_args()
+    
+    # Create parser for the legacy mode (backward compatibility)
+    legacy_parser = subparsers.add_parser("legacy", help="Legacy mode (backward compatibility)")
+    legacy_parser.add_argument(
+        "file_path",
+        help="Path to the gzipped JSON file containing alert events"
+    )
+    legacy_parser.add_argument(
+        "--dimension", "-d",
+        default="host",
+        help="Dimension to analyze (default: host)"
+    )
+    legacy_parser.add_argument(
+        "--top", "-k",
+        type=int,
+        default=5,
+        help="Number of entities to return (default: 5)"
+    )
+    legacy_parser.add_argument(
+        "--alert-type", "-t",
+        help="Filter by alert type"
+    )
+    legacy_parser.add_argument(
+        "--output", "-o",
+        help="Output file path (default: stdout)"
+    )
+    legacy_parser.add_argument(
+        "--format", "-f",
+        choices=["json", "text"],
+        default="text",
+        help="Output format (default: text)"
+    )
+    
+    # For backward compatibility, if no command is specified but a file path is provided,
+    # assume legacy mode
+    args, unknown = parser.parse_known_args()
+    if args.command is None and unknown:
+        # Check if the first unknown arg looks like a file path
+        if not unknown[0].startswith('-'):
+            args = parser.parse_args(['legacy'] + unknown)
+    
+    return args
 
 
 def format_results(results: List[Dict[str, Any]], format_type: str) -> str:
@@ -105,26 +145,48 @@ def main() -> None:
     args = parse_args()
 
     try:
-        # Create analyzer
-        analyzer = AlertAnalyzer()
+        if args.command == "process":
+            # Process command
+            processor = EventProcessor()
+            events_processed = processor.process_file(args.file_path)
+            print(f"Processed {events_processed} events from {args.file_path}")
+            
+        elif args.command == "query":
+            # Query command
+            query_engine = QueryEngine()
+            results = query_engine.get_top_k(args.dimension, args.top)
+            
+            # Format results
+            output = format_results(results, args.format)
+            
+            # Write output
+            if args.output:
+                with open(args.output, 'w') as f:
+                    f.write(output)
+            else:
+                print(output)
+                
+        else:  # Legacy mode or no command specified
+            # Create analyzer (backward compatibility)
+            analyzer = AlertAnalyzer()
 
-        # Analyze file
-        results = analyzer.analyze_file(
-            args.file_path,
-            args.dimension,
-            args.top,
-            args.alert_type
-        )
+            # Analyze file
+            results = analyzer.analyze_file(
+                args.file_path,
+                args.dimension,
+                args.top,
+                getattr(args, 'alert_type', None)
+            )
 
-        # Format results
-        output = format_results(results, args.format)
+            # Format results
+            output = format_results(results, args.format)
 
-        # Write output
-        if args.output:
-            with open(args.output, 'w') as f:
-                f.write(output)
-        else:
-            print(output)
+            # Write output
+            if args.output:
+                with open(args.output, 'w') as f:
+                    f.write(output)
+            else:
+                print(output)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)

@@ -17,67 +17,67 @@ This checklist tracks progress on implementing the separation of event processin
 - [x] Write tests for get_index() method
 
 ## Prompt 2: Add Index Update Methods to IndexManager
-- [ ] Add update_for_new_alert() method
-- [ ] Add update_for_resolved_alert() method
-- [ ] Add _update_entity_position() helper method
-- [ ] Update tests to verify update_for_new_alert()
-- [ ] Update tests to verify update_for_resolved_alert()
-- [ ] Update tests to verify _update_entity_position()
-- [ ] Ensure edge cases are handled
-- [ ] Verify behavior matches existing AlertAnalyzer implementation
+- [x] Add update_for_new_alert() method
+- [x] Add update_for_resolved_alert() method
+- [x] Add _update_entity_position() helper method
+- [x] Update tests to verify update_for_new_alert()
+- [x] Update tests to verify update_for_resolved_alert()
+- [x] Update tests to verify _update_entity_position()
+- [x] Ensure edge cases are handled
+- [x] Verify behavior matches existing AlertAnalyzer implementation
 
 ## Prompt 3: Create QueryEngine Class
-- [ ] Create src/query/query_engine.py file
-- [ ] Implement QueryEngine class
-- [ ] Add constructor that gets IndexManager instance
-- [ ] Implement get_top_k() method
-- [ ] Add logic to track processed entities
-- [ ] Format results correctly
-- [ ] Create tests/query/test_query_engine.py
-- [ ] Write tests for get_top_k() method
-- [ ] Write tests for entity sorting
-- [ ] Write tests for duplicate entity handling
-- [ ] Write tests for result format
-- [ ] Configure logging for QueryEngine
+- [x] Create src/query/query_engine.py file
+- [x] Implement QueryEngine class
+- [x] Add constructor that gets IndexManager instance
+- [x] Implement get_top_k() method
+- [x] Add logic to track processed entities
+- [x] Format results correctly
+- [x] Create tests/query/test_query_engine.py
+- [x] Write tests for get_top_k() method
+- [x] Write tests for entity sorting
+- [x] Write tests for duplicate entity handling
+- [x] Write tests for result format
+- [x] Configure logging for QueryEngine
 
 ## Prompt 4: Create EventProcessor Class
-- [ ] Create src/processors/event_processor.py file
-- [ ] Implement EventProcessor class
-- [ ] Add constructor with alert_states dictionary
-- [ ] Get IndexManager instance in constructor
-- [ ] Implement process_event() method
-- [ ] Handle NEW, ACK, and RSV states
-- [ ] Implement process_file() method
-- [ ] Add performance metrics logging
-- [ ] Create tests/processors/test_event_processor.py
-- [ ] Write tests for process_event() method
-- [ ] Write tests for process_file() method
-- [ ] Write tests for error handling
-- [ ] Configure logging for EventProcessor
+- [x] Create src/processors/event_processor.py file
+- [x] Implement EventProcessor class
+- [x] Add constructor with alert_states dictionary
+- [x] Get IndexManager instance in constructor
+- [x] Implement process_event() method
+- [x] Handle NEW, ACK, and RSV states
+- [x] Implement process_file() method
+- [x] Add performance metrics logging
+- [x] Create tests/processors/test_event_processor.py
+- [x] Write tests for process_event() method
+- [x] Write tests for process_file() method
+- [x] Write tests for error handling
+- [x] Configure logging for EventProcessor
 
 ## Prompt 5: Update AlertAnalyzer for Backward Compatibility
-- [ ] Update AlertAnalyzer constructor to use new components
-- [ ] Update analyze_file() method to use EventProcessor
-- [ ] Update get_top_k() method to use QueryEngine
-- [ ] Keep get_results() as a wrapper for get_top_k()
-- [ ] Add warning for alert_type filtering
-- [ ] Update tests/test_alert_analyzer.py
-- [ ] Write tests for updated analyze_file() method
-- [ ] Write tests for updated get_top_k() method
-- [ ] Write tests for get_results() method
-- [ ] Write tests for alert_type warning
-- [ ] Verify all existing tests still pass
+- [x] Update AlertAnalyzer constructor to use new components
+- [x] Update analyze_file() method to use EventProcessor
+- [x] Update get_top_k() method to use QueryEngine
+- [x] Keep get_results() as a wrapper for get_top_k()
+- [x] Add warning for alert_type filtering
+- [x] Create tests/test_alert_analyzer.py
+- [x] Write tests for updated analyze_file() method
+- [x] Write tests for updated get_top_k() method
+- [x] Write tests for get_results() method
+- [x] Write tests for alert_type warning
+- [x] Verify all tests pass
 
 ## Prompt 6: Update Command-Line Interface
-- [ ] Update src/__main__.py to support new commands
-- [ ] Implement process command
-- [ ] Implement query command
-- [ ] Update main function to parse arguments
-- [ ] Create tests/test_cli.py
-- [ ] Write tests for process command
-- [ ] Write tests for query command
-- [ ] Write tests for error handling
-- [ ] Ensure backward compatibility with existing interface
+- [x] Update src/__main__.py to support new commands
+- [x] Implement process command
+- [x] Implement query command
+- [x] Update main function to parse arguments
+- [x] Create tests/test_cli.py
+- [x] Write tests for process command
+- [x] Write tests for query command
+- [x] Write tests for error handling
+- [x] Ensure backward compatibility with existing interface
 
 ## Prompt 7: Update Results Management
 - [ ] Update save_results.py to use new components
