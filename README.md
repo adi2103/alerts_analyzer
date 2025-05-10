@@ -16,6 +16,7 @@ The Alert Analysis System processes alert event data from a compressed file cont
 - Handle various edge cases in the data
 - Provide detailed logging and error handling
 - Save and manage analysis results with query metadata
+- Query server for persistent in-memory indices
 
 ## Installation
 
@@ -99,6 +100,41 @@ python list_results.py
 ```
 
 This will display all saved analysis results with their query parameters.
+
+### Query Server
+
+The system includes a simple server that can maintain indices in memory and respond to queries from multiple clients.
+
+#### Starting the Server
+
+```
+python query_server.py <file_path> [options]
+```
+
+Options:
+- `--host`: Host to bind to (default: localhost)
+- `--port`: Port to bind to (default: 5000)
+
+Example:
+```
+python query_server.py data/Alert_Event_Data.gz --port 5000
+```
+
+#### Querying the Server
+
+```
+python query_client.py <dimension_name> [options]
+```
+
+Options:
+- `--top`, `-k`: Number of entities to return (default: 5)
+- `--server`: Server URL (default: http://localhost:5000)
+- `--format`, `-f`: Output format (json or text, default: text)
+
+Example:
+```
+python query_client.py host --top 10 --server http://localhost:5000
+```
 
 ### Python API
 
@@ -208,6 +244,12 @@ alerts_analyzer/
 │   ├── query/
 │   │   ├── __init__.py
 │   │   └── query_engine.py    # Query processing
+│   ├── server/
+│   │   ├── __init__.py
+│   │   └── index_server.py    # Query server
+│   ├── client/
+│   │   ├── __init__.py
+│   │   └── query_client.py    # Query client
 │   └── utils/
 │       ├── __init__.py
 │       ├── file_handler.py   # File I/O
@@ -224,10 +266,18 @@ alerts_analyzer/
 │   ├── test_file_handler.py
 │   ├── test_results_manager.py
 │   ├── test_cli.py
-│   └── test_end_to_end.py
+│   ├── test_end_to_end.py
+│   ├── server/
+│   │   ├── __init__.py
+│   │   └── test_index_server.py
+│   └── client/
+│       ├── __init__.py
+│       └── test_query_client.py
 ├── results/                  # Directory for saved analysis results
 ├── save_results.py           # Script to save analysis results
 ├── list_results.py           # Script to list saved results
+├── query_server.py           # Script to start the query server
+├── query_client.py           # Script to query the server
 ├── MIGRATION_GUIDE.md        # Guide for migrating to the new API
 ├── requirements.txt
 └── README.md
