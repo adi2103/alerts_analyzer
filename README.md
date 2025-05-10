@@ -25,9 +25,37 @@ git clone https://github.com/yourusername/alerts_analyzer.git
 cd alerts_analyzer
 ```
 
-2. Install dependencies:
+2. Set up a Python virtual environment:
+
+This project requires Python 3.12.4. Using a virtual environment ensures that the project's dependencies don't conflict with your other Python projects.
+
+```bash
+# Create a virtual environment
+python3.12 -m venv venv
+
+# Activate the virtual environment
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+# venv\Scripts\activate
+
+# Verify Python version
+python --version  # Should output Python 3.12.4
+```
+
+If you don't have Python 3.12.4 installed, you can install it using:
+- macOS: `brew install python@3.12` (using Homebrew)
+- Linux: Use your distribution's package manager or pyenv
+- Windows: Download from the [official Python website](https://www.python.org/downloads/)
+
+3. Install dependencies:
 ```
 pip install -r requirements.txt
+```
+
+4. When you're done working on the project, deactivate the virtual environment:
+```
+deactivate
 ```
 
 ## Usage
@@ -49,7 +77,7 @@ Options:
 
 Example:
 ```
-python query_server.py data/Alert_Event_Data.gz --port 8080
+python query_server.py data/Alert_Event_Data.gz
 ```
 
 The server can process multiple data files:
@@ -75,7 +103,7 @@ Options:
 
 Example:
 ```
-python query_client.py query host --top 10 --server http://localhost:8080
+python query_client.py query host --top 5 --save
 ```
 
 #### Listing Saved Results
@@ -233,6 +261,16 @@ This project was developed over approximately 4 hours, with significant effort f
    - src/index_manager.py: Managing global indices for different dimensions
 
 3. **Testing & Quality Assurance**: Extensive testing, logging, and debugging to ensure correctness and reliability.
+
+4. **Assumptions**: There are some assumptions made in lieu of prototyping:
+   - If the file has a ACK or RSV state for an alert then the alert is counted in but the unhealthy time is only included only the from first NEW / ACK state seen in the file and not from the first timestamp in the file.
+   - If the file has a NEW or ACK but not RSV state for an alert, then the alert is counted but the unhealthy time is not included in the host's total unhealthy time. This is because the unhealthy time update happens only when RSV is observed for an alert
+   - Multiple NEW or ACK events for the same alert_id are counted only once
+   - A single RSV event closes the alert lifecycle for an alert_id
+   - RSV events without corresponding NEW events are excluded
+   - Events with invalid timestamps are ignored
+   - Apart from the file boundary, the time window is calculated from first NEW to first RSV
+
 
 ## Known Limitations
 
