@@ -12,6 +12,13 @@ class Index:
 
     An Index provides efficient access to entities ordered by their unhealthy time,
     allowing for quick retrieval of the top k unhealthiest entities.
+
+    Time Complexity:
+        - Insertion: O(log N) where N is the number of distinct unhealthy times
+        - Top-k query: O(k) where k is the number of results requested
+        - Entity lookup: O(1) constant time
+
+    Space Complexity: O(E) where E is the number of entities in this dimension
     """
 
     def __init__(self,
@@ -45,6 +52,9 @@ class Index:
         """
         Get the EntityState for a specific entity value, creating it if it doesn't exist.
 
+        Time Complexity: O(1) - Constant time dictionary access and insertion
+        Space Complexity: O(1) - Creates at most one new EntityState
+
         Args:
             entity_value: Value of the entity (e.g., host ID, data center ID)
 
@@ -64,6 +74,9 @@ class Index:
             new_time: float) -> None:
         """
         Update the position of an entity in the ordered index.
+
+        Time Complexity: O(log N) where N is the number of distinct unhealthy times
+        Space Complexity: O(1) - Uses constant extra space
 
         Args:
             entity_value: Value of the entity to update
@@ -89,6 +102,9 @@ class Index:
     def get_top_k(self, k: int = 5) -> Dict[str, Dict[str, Any]]:
         """
         Get the top k entities by unhealthy time.
+
+        Time Complexity: O(k) - Linear in the number of results requested
+        Space Complexity: O(k) - Stores k result entities
 
         Args:
             k: Number of entities to return

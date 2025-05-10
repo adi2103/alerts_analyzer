@@ -17,6 +17,16 @@ class AlertAnalyzer:
     The AlertAnalyzer processes alert events, tracks alert lifecycles, and
     maintains indices for different dimensions to enable efficient querying
     of the unhealthiest entities.
+
+    Time Complexity:
+        - Event processing: O(D) per event where D is the number of dimensions
+        - Top-k query: O(k) where k is the number of results requested
+        - File analysis: O(E * D + k) where E is the number of events
+
+    Space Complexity: O(A + D * N) where:
+        - A is the number of active alerts at any given time
+        - D is the number of dimensions
+        - N is the number of entities across all dimensions
     """
 
     def __init__(self):
@@ -44,6 +54,9 @@ class AlertAnalyzer:
         """
         Register a new dimension for indexing and aggregation.
 
+        Time Complexity: O(1) - Constant time dictionary insertion
+        Space Complexity: O(1) - Stores a single new Index object
+
         Args:
             dimension_name: Name of the dimension (e.g., "host", "dc", "service")
             extractor_func: Function that extracts the entity value from an AlertState
@@ -53,6 +66,9 @@ class AlertAnalyzer:
     def process_event(self, event: AlertEvent) -> None:
         """
         Process an alert event and update the relevant states and indices.
+
+        Time Complexity: O(D) where D is the number of dimensions
+        Space Complexity: O(1) - Uses constant extra space
 
         Args:
             event: The alert event to process
@@ -68,7 +84,7 @@ class AlertAnalyzer:
                 tags=event.tags
             )
 
-        # Skip RSV events for unknown alerts
+        # Assumption: We skip RSV events for unknown alerts
         if alert_id not in self.alert_states:
             return
 
@@ -101,12 +117,15 @@ class AlertAnalyzer:
         """
         Update entity states when a new alert is created.
 
+        Time Complexity: O(D) where D is the number of dimensions
+        Space Complexity: O(1) - Uses constant extra space
+
         Args:
             alert_state: The alert state
             timestamp: When the alert was created
         """
         # Update each dimension
-        for dimension_name, dimension_index in self.dimensions.items():
+        for _, dimension_index in self.dimensions.items():
             # Extract entity value for this dimension
             entity_value = dimension_index.extractor_func(alert_state)
             if not entity_value:
@@ -125,6 +144,9 @@ class AlertAnalyzer:
             self, alert_state: AlertState, timestamp: datetime) -> None:
         """
         Update entity states when an alert is resolved.
+
+        Time Complexity: O(D) where D is the number of dimensions
+        Space Complexity: O(1) - Uses constant extra space
 
         Args:
             alert_state: The alert state
@@ -148,6 +170,9 @@ class AlertAnalyzer:
             self, alert_state: AlertState) -> None:
         """
         Update dimension indices when an alert is resolved.
+
+        Time Complexity: O(D * log N) where D is the number of dimensions and N is the number of entities
+        Space Complexity: O(1) - Uses constant extra space
 
         Args:
             alert_state: The alert state
@@ -182,6 +207,9 @@ class AlertAnalyzer:
         """
         Update the position of an entity in the sorted index.
 
+        Time Complexity: O(log N) where N is the number of distinct unhealthy times
+        Space Complexity: O(1) - Uses constant extra space
+
         Args:
             dimension_index: The dimension index to update
             entity_value: Value of the entity to update
@@ -195,6 +223,9 @@ class AlertAnalyzer:
                   alert_type: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Get top k entities by unhealthy time for a specific dimension.
+
+        Time Complexity: O(k) - Linear in the number of results requested
+        Space Complexity: O(k) - Stores k result entities
 
         Args:
             dimension_name: Name of the dimension to query
@@ -257,6 +288,16 @@ class AlertAnalyzer:
         """
         Analyze alert events from a file and return the top k unhealthiest entities.
 
+        Time Complexity: O(E * D + k) where:
+            - E is the number of events in the file
+            - D is the number of dimensions
+            - k is the number of results requested
+
+        Space Complexity: O(A + D * N) where:
+            - A is the number of active alerts at any given time
+            - D is the number of dimensions
+            - N is the number of entities across all dimensions
+
         Args:
             file_path: Path to the gzipped JSON file
             dimension_name: Name of the dimension to analyze
@@ -305,6 +346,9 @@ class AlertAnalyzer:
                     alert_type: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Get the top k unhealthiest entities for a specific dimension.
+
+        Time Complexity: O(k) - Linear in the number of results requested
+        Space Complexity: O(k) - Stores k result entities
 
         Args:
             dimension_name: Name of the dimension to query
