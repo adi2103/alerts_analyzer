@@ -112,7 +112,7 @@ class AlertAnalyzer:
                 alert_state.start_time,
                 alert_state.end_time
             )
-    
+
     def get_top_k(self, dimension_name: str, k: int = 5, alert_type: Optional[str] = None):
         """Get top k entities by unhealthy time for a specific dimension."""
         if dimension_name not in self.dimensions:

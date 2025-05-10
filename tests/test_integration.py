@@ -9,26 +9,27 @@ from src.alert_analyzer import AlertAnalyzer
 
 class TestIntegration:
     """Integration tests for the Alert Analysis System."""
-    
+
     @pytest.fixture
     def data_file(self):
         """Path to the actual data file."""
-        data_path = Path(__file__).parent.parent / "data" / "Alert_Event_Data.gz"
+        data_path = Path(__file__).parent.parent / \
+            "data" / "Alert_Event_Data.gz"
         if not data_path.exists():
             pytest.skip(f"Data file not found: {data_path}")
         return data_path
-    
+
     def test_analyze_real_data(self, data_file):
         """Test analyzing the real data file."""
         # Create analyzer
         analyzer = AlertAnalyzer()
-        
+
         # Analyze file
         results = analyzer.analyze_file(data_file, dimension_name='host', k=5)
-        
+
         # Check results
         assert len(results) == 5
-        
+
         # Verify the top 5 hosts match our expected results
         expected_hosts = [
             "host-89a9a342729c4e5b",
@@ -37,11 +38,12 @@ class TestIntegration:
             "host-4b878e6158364b3a",
             "host-45b4899390b28fdb"
         ]
-        
+
         actual_hosts = [result["host_id"] for result in results]
         assert actual_hosts == expected_hosts
-        
-        # Verify the unhealthy times are correct (with some tolerance for floating point)
+
+        # Verify the unhealthy times are correct (with some tolerance for
+        # floating point)
         expected_times = [
             145521.49419099998,
             84627.52385700001,
@@ -49,24 +51,27 @@ class TestIntegration:
             60371.876107,
             56419.925382
         ]
-        
+
         for i, result in enumerate(results):
-            assert abs(result["total_unhealthy_time"] - expected_times[i]) < 0.01
-        
+            assert abs(
+                result["total_unhealthy_time"] -
+                expected_times[i]) < 0.01
+
         # Verify all hosts have Disk Usage Alert
         for result in results:
             assert "Disk Usage Alert" in result["alert_types"]
-    
+
     def test_no_duplicates_in_results(self, data_file):
         """Test that there are no duplicate entities in the results."""
         # Create analyzer
         analyzer = AlertAnalyzer()
-        
+
         # Analyze file
         results = analyzer.analyze_file(data_file, dimension_name='host', k=10)
-        
+
         # Extract host IDs
         host_ids = [result["host_id"] for result in results]
-        
+
         # Check for duplicates
-        assert len(host_ids) == len(set(host_ids)), "Duplicate hosts found in results"
+        assert len(host_ids) == len(
+            set(host_ids)), "Duplicate hosts found in results"

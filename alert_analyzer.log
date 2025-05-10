@@ -106,3 +106,61 @@
 2025-05-09 10:43:54,178 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28873.10 events/sec)
 2025-05-09 11:05:46,580 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28338.84 events/sec)
 2025-05-09 16:40:22,538 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (24653.16 events/sec)
+2025-05-09 18:42:03,812 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (25959.48 events/sec)
+2025-05-09 18:42:03,850 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27458.48 events/sec)
+2025-05-09 18:42:15,077 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (15625.00 events/sec)
+2025-05-09 18:42:15,080 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (16155.09 events/sec)
+2025-05-09 18:42:15,080 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-09 18:42:15,097 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (14727.54 events/sec)
+2025-05-09 18:42:15,098 - file_handler - ERROR - File not found: /path/that/definitely/does/not/exist/file.json
+2025-05-09 18:42:15,103 - file_handler - ERROR - Error processing event: json_decode_error
+2025-05-09 18:42:15,104 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpt52z_tgw.gz
+2025-05-09 18:42:15,143 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28001.98 events/sec)
+2025-05-09 18:42:15,179 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.03 seconds (29268.29 events/sec)
+2025-05-09 18:44:14,452 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (10964.91 events/sec)
+2025-05-09 18:44:14,455 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (19685.04 events/sec)
+2025-05-09 18:44:14,455 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-09 18:44:14,472 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (17391.30 events/sec)
+2025-05-09 18:44:14,473 - file_handler - ERROR - File not found: /path/that/definitely/does/not/exist/file.json
+2025-05-09 18:44:14,478 - file_handler - ERROR - Error processing event: json_decode_error
+2025-05-09 18:44:14,479 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp93_9mlfi.gz
+2025-05-09 18:44:14,528 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.05 seconds (21576.80 events/sec)
+2025-05-09 18:44:14,566 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27890.95 events/sec)
+2025-05-09 18:46:46,142 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (13368.98 events/sec)
+2025-05-09 18:46:46,144 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (18083.18 events/sec)
+2025-05-09 18:46:46,144 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-09 18:46:46,160 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (17182.13 events/sec)
+2025-05-09 18:46:46,161 - file_handler - ERROR - File not found: /path/that/definitely/does/not/exist/file.json
+2025-05-09 18:46:46,165 - file_handler - ERROR - Error processing event: json_decode_error
+2025-05-09 18:46:46,167 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp3r17mtr4.gz
+2025-05-09 18:46:46,206 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27557.14 events/sec)
+2025-05-09 18:46:46,243 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28920.58 events/sec)
+2025-05-09 18:47:26,723 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (14306.15 events/sec)
+2025-05-09 18:47:26,725 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (20242.91 events/sec)
+2025-05-09 18:47:26,725 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-09 18:47:26,741 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (16393.44 events/sec)
+2025-05-09 18:47:26,742 - file_handler - ERROR - File not found: /path/that/definitely/does/not/exist/file.json
+2025-05-09 18:47:26,746 - file_handler - ERROR - Error processing event: json_decode_error
+2025-05-09 18:47:26,747 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmpv6dlo1zn.gz
+2025-05-09 18:47:26,786 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28319.17 events/sec)
+2025-05-09 18:47:26,821 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.03 seconds (29961.23 events/sec)
+2025-05-09 18:48:13,169 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (13477.09 events/sec)
+2025-05-09 18:48:13,171 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (21413.28 events/sec)
+2025-05-09 18:48:13,171 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-09 18:48:13,187 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (18726.59 events/sec)
+2025-05-09 18:48:13,188 - file_handler - ERROR - File not found: /path/that/definitely/does/not/exist/file.json
+2025-05-09 18:48:13,191 - file_handler - ERROR - Error processing event: json_decode_error
+2025-05-09 18:48:13,192 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp6q_pm9ky.gz
+2025-05-09 18:48:13,231 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (27141.37 events/sec)
+2025-05-09 18:48:13,269 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28399.60 events/sec)
+2025-05-09 18:49:13,274 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (13020.83 events/sec)
+2025-05-09 18:49:13,276 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (17699.12 events/sec)
+2025-05-09 18:49:13,276 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
+2025-05-09 18:49:13,278 - alert_analyzer - INFO - Performance metrics: 10 events in 0.00 seconds (20080.32 events/sec)
+2025-05-09 18:49:13,279 - file_handler - ERROR - File not found: /path/that/definitely/does/not/exist/file.json
+2025-05-09 18:49:13,283 - file_handler - ERROR - Error processing event: json_decode_error
+2025-05-09 18:49:13,285 - file_handler - ERROR - Not a valid gzip file: /var/folders/bz/2fzvpx2102ddvszyd7hkh1pc0000gr/T/tmp1u99q0eu.gz
+2025-05-09 18:49:13,325 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (26407.77 events/sec)
+2025-05-09 18:49:13,363 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28018.13 events/sec)
+2025-05-09 18:49:34,423 - alert_analyzer - INFO - Performance metrics: 1020 events in 0.04 seconds (28008.13 events/sec)
+2025-05-09 18:49:34,423 - alert_analyzer - WARNING - Alert type filtering is not supported in this version. Returning results without filtering by alert type.
