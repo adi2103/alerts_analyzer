@@ -118,7 +118,7 @@ class IndexServer:
         self.logger.info(f"Processed {events_processed} events")
         return events_processed
         
-    def start(self, host="localhost", port=5000, debug=False):
+    def start(self, host="localhost", port=8080, debug=False):
         """
         Start the server.
         
@@ -146,7 +146,7 @@ def main():
     parser = argparse.ArgumentParser(description="Alert Analysis Index Server")
     parser.add_argument("file_path", help="Path to the alert event file to process")
     parser.add_argument("--host", default="localhost", help="Host to bind to")
-    parser.add_argument("--port", type=int, default=5000, help="Port to bind to")
+    parser.add_argument("--port", type=int, default=8080, help="Port to bind to")
     parser.add_argument("--debug", action="store_true", help="Run in debug mode")
     
     args = parser.parse_args()

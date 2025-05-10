@@ -113,11 +113,11 @@ python query_server.py <file_path> [options]
 
 Options:
 - `--host`: Host to bind to (default: localhost)
-- `--port`: Port to bind to (default: 5000)
+- `--port`: Port to bind to (default: 8080)
 
 Example:
 ```
-python query_server.py data/Alert_Event_Data.gz --port 5000
+python query_server.py data/Alert_Event_Data.gz --port 8080
 ```
 
 #### Querying the Server
@@ -128,12 +128,12 @@ python query_client.py <dimension_name> [options]
 
 Options:
 - `--top`, `-k`: Number of entities to return (default: 5)
-- `--server`: Server URL (default: http://localhost:5000)
+- `--server`: Server URL (default: http://localhost:8080)
 - `--format`, `-f`: Output format (json or text, default: text)
 
 Example:
 ```
-python query_client.py host --top 10 --server http://localhost:5000
+python query_client.py host --top 10 --server http://localhost:8080
 ```
 
 ### Python API

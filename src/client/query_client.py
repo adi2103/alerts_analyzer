@@ -14,26 +14,26 @@ class QueryClient:
     """
     A client for querying the Alert Analysis Index Server.
     """
-    
-    def __init__(self, server_url="http://localhost:5000"):
+
+    def __init__(self, server_url="http://localhost:8080"):
         """
         Initialize the QueryClient.
-        
+
         Args:
             server_url: URL of the index server
         """
         self.server_url = server_url
         self.logger = logging.getLogger("query_client")
-        
+
     def query(self, dimension="host", top=5, output_format="text"):
         """
         Query the index server for top k unhealthiest entities.
-        
+
         Args:
             dimension: Dimension to analyze (host, dc, service, etc.)
             top: Number of entities to return
             output_format: Output format (text or json)
-            
+
         Returns:
             str: Formatted results
         """
@@ -45,7 +45,7 @@ class QueryClient:
                 params={"dimension": dimension, "top": top},
                 headers={"Content-Type": "application/json"}
             )
-            
+
             # If GET fails, try POST
             if response.status_code != 200:
                 self.logger.info(f"GET request failed with status {response.status_code}, trying POST")
@@ -54,13 +54,13 @@ class QueryClient:
                     json={"dimension": dimension, "top": top},
                     headers={"Content-Type": "application/json"}
                 )
-            
+
             if response.status_code != 200:
                 self.logger.error(f"Request failed with status {response.status_code}: {response.text}")
                 return f"Error: {response.status_code} - {response.text}"
-                
+
             results = response.json()
-            
+
             if output_format == "json":
                 return json.dumps(results, indent=2)
             else:
@@ -70,7 +70,7 @@ class QueryClient:
                     output += f"{i}. {entity[f'{dimension}_id']}: {entity['total_unhealthy_time']} seconds\n"
                     output += f"   Alert types: {entity['alert_types']}\n"
                 return output
-                
+
         except requests.exceptions.ConnectionError as e:
             self.logger.error(f"Connection error: {str(e)}")
             return f"Error: Could not connect to server at {self.server_url}"
@@ -85,25 +85,25 @@ def main():
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
-    
+
     parser = argparse.ArgumentParser(description="Query Alert Analysis Index Server")
     parser.add_argument("dimension", help="Dimension to analyze (host, dc, service, etc.)")
     parser.add_argument("--top", "-k", type=int, default=5, help="Number of entities to return")
-    parser.add_argument("--server", default="http://localhost:5000", help="Index server URL")
+    parser.add_argument("--server", default="http://localhost:8080", help="Index server URL")
     parser.add_argument("--format", "-f", choices=["text", "json"], default="text", help="Output format")
     parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
-    
+
     args = parser.parse_args()
-    
+
     # Set log level based on verbose flag
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     client = QueryClient(args.server)
     result = client.query(args.dimension, args.top, args.format)
-    
+
     print(result)
-    
+
     return 0
 
 if __name__ == "__main__":
