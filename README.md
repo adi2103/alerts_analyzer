@@ -34,7 +34,31 @@ pip install -r requirements.txt
 
 ### Command-line Interface
 
-#### Running Analysis
+#### Processing Events
+
+```
+python -m src process <file_path>
+```
+
+This command processes events from a file and updates the global indices.
+
+#### Querying Results
+
+```
+python -m src query <dimension_name> [options]
+```
+
+Options:
+- `--top`, `-k`: Number of entities to return (default: 5)
+- `--output`, `-o`: Output file path (default: stdout)
+- `--format`, `-f`: Output format (json or text, default: text)
+
+Example:
+```
+python -m src query host --top 10
+```
+
+#### Legacy Mode (Backward Compatibility)
 
 ```
 python -m src <file_path> [options]
@@ -79,19 +103,17 @@ This will display all saved analysis results with their query parameters.
 ### Python API
 
 ```python
-from src.alert_analyzer import AlertAnalyzer
+from src.processors.event_processor import EventProcessor
+from src.query.query_engine import QueryEngine
 from src.utils.results_manager import ResultsManager
 
-# Create analyzer
-analyzer = AlertAnalyzer()
+# Process events
+processor = EventProcessor()
+processor.process_file("data/Alert_Event_Data.gz")
 
-# Analyze file
-results = analyzer.analyze_file(
-    "data/Alert_Event_Data.gz",
-    dimension_name="host",
-    k=5,
-    alert_type="Disk Usage Alert"
-)
+# Query results
+query_engine = QueryEngine()
+results = query_engine.get_top_k("host", 5)
 
 # Print results
 for entity in results:
@@ -104,7 +126,7 @@ filename, saved_results = results_manager.save_results(
     "data/Alert_Event_Data.gz",
     "host",
     5,
-    "Disk Usage Alert"
+    None
 )
 
 # List all saved results
@@ -116,16 +138,56 @@ for result in all_results:
 loaded_result = results_manager.load_results(filename)
 ```
 
-## Design
+#### Backward Compatibility
+
+The `AlertAnalyzer` class is still available for backward compatibility:
+
+```python
+from src.alert_analyzer import AlertAnalyzer
+
+# Create analyzer
+analyzer = AlertAnalyzer()
+
+# Analyze file
+results = analyzer.analyze_file(
+    "data/Alert_Event_Data.gz",
+    dimension_name="host",
+    k=5,
+    alert_type="Disk Usage Alert"  # Note: Alert type filtering is not supported in this version
+)
+```
+
+## Architecture
 
 The Alert Analysis System uses a modular design with the following components:
 
-1. **Models**: Data structures for alert events, alert states, and entity states
-2. **Indexing**: Efficient indexing of entities by unhealthy time using SortedDict
-3. **File Handling**: Reading and parsing gzipped JSON files
-4. **Alert Processing**: Tracking alert lifecycle and updating entity states
-5. **Query Engine**: Finding top k unhealthiest entities with optional filtering
-6. **Results Management**: Saving, loading, and listing analysis results with query metadata
+1. **IndexManager**: Maintains global indices for different dimensions
+2. **EventProcessor**: Processes alert events and updates indices
+3. **QueryEngine**: Queries indices for unhealthy entities
+4. **AlertAnalyzer**: Provides backward compatibility with the old API
+
+```
+┌─────────────────┐     ┌─────────────────┐
+│                 │     │                 │
+│ EventProcessor  │────►│  IndexManager   │
+│                 │     │                 │
+└─────────────────┘     └────────┬────────┘
+       ▲                         │
+       │                         │
+       │                         ▼
+File Input               ┌─────────────────┐
+                         │                 │
+                         │  QueryEngine    │◄────── Query Input
+                         │                 │
+                         └─────────────────┘
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │                 │
+                         │     Results     │
+                         │                 │
+                         └─────────────────┘
+```
 
 ## Project Structure
 
@@ -134,11 +196,18 @@ alerts_analyzer/
 ├── src/
 │   ├── __init__.py
 │   ├── __main__.py           # Command-line interface
-│   ├── alert_analyzer.py     # Main entry point
+│   ├── alert_analyzer.py     # Backward compatibility
 │   ├── models.py             # Data models
 │   ├── indexing/
 │   │   ├── __init__.py
-│   │   └── dimension_index.py # Dimension indexing
+│   │   ├── dimension_index.py # Dimension indexing
+│   │   └── index_manager.py   # Index management
+│   ├── processors/
+│   │   ├── __init__.py
+│   │   └── event_processor.py # Event processing
+│   ├── query/
+│   │   ├── __init__.py
+│   │   └── query_engine.py    # Query processing
 │   └── utils/
 │       ├── __init__.py
 │       ├── file_handler.py   # File I/O
@@ -148,15 +217,18 @@ alerts_analyzer/
 │   ├── __init__.py
 │   ├── test_models.py
 │   ├── test_dimension_index.py
-│   ├── test_alert_processor.py
+│   ├── test_index_manager.py
+│   ├── test_event_processor.py
 │   ├── test_query_engine.py
+│   ├── test_alert_analyzer.py
 │   ├── test_file_handler.py
-│   ├── test_logging.py
 │   ├── test_results_manager.py
+│   ├── test_cli.py
 │   └── test_end_to_end.py
 ├── results/                  # Directory for saved analysis results
 ├── save_results.py           # Script to save analysis results
 ├── list_results.py           # Script to list saved results
+├── MIGRATION_GUIDE.md        # Guide for migrating to the new API
 ├── requirements.txt
 └── README.md
 ```
@@ -169,27 +241,18 @@ Run the tests with pytest:
 pytest
 ```
 
-## Design Decisions and Trade-offs
+## Known Limitations
 
-1. **SortedDict for Ordered Access**: We use SortedDict from the sortedcontainers package to efficiently maintain entities ordered by unhealthy time. This provides O(log n) insertion and O(k) retrieval of top k entities.
+1. **Alert Type Filtering**: Alert type filtering is not supported in this version. When specifying an alert type, a warning will be logged and results will be returned without filtering by alert type.
 
-2. **Multi-dimensional Indexing**: The system supports multiple dimensions (host, data center, service, etc.) through a flexible indexing mechanism. Each dimension maintains its own index of entities.
-
-3. **Memory vs. Speed**: The system keeps all entity states in memory for fast querying, which works well for moderate-sized datasets but may need optimization for very large datasets.
-
-4. **Alert-centric State Tracking**: We track the state of each alert and update entity states accordingly. This allows for accurate handling of overlapping alerts.
-
-5. **Error Handling**: The system is designed to be robust against various error conditions, logging issues but continuing processing where possible.
-
-6. **Results Management**: Analysis results are saved with query metadata to enable reproducibility and tracking of analysis history.
+2. **Persistence**: Indices are not persisted between runs. They are built in memory each time events are processed.
 
 ## Future Enhancements
 
-1. **Time Range Queries**: Support for finding unhealthy entities within specific time periods
-2. **Parallel Processing**: Improved performance through parallel processing of events
-3. **Additional Filtering**: More complex filtering criteria beyond alert type
-4. **Visualization**: Visual representation of entity health over time
-5. **Streaming Support**: Processing events in real-time from a streaming source
+1. **Persistent Indices**: Store indices on disk to persist between runs
+2. **File Monitoring**: Automatically process new files in a directory
+3. **Advanced Querying**: Support filtering by time, dimensions, and alert type
+4. **Dynamic Index Creation**: Allow creation of new indices at runtime
 
 ## License
 
