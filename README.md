@@ -294,4 +294,4 @@ This project was developed over approximately 4 hours, with significant effort f
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the GNU GPLv3 License - see the LICENSE file for details.
